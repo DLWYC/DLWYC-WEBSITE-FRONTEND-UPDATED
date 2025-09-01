@@ -62,8 +62,6 @@ return (
         {/* Google OAuth */}
         <div className="mt-4 flex ">
           <GoogleLogin
-            // clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-          // key={import.meta.env.VITE_GOOGLE_CLIENT_KEY}
             onSuccess={handleGoogleLogin}
             onError={() => alert("Google Login Failed")}
           />
