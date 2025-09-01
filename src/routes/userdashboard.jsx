@@ -1,7 +1,7 @@
 
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSideBar/AppSidebar";
+import  AppSidebar  from  "@/components/AppSideBar/AppSidebar";
 import { cn } from "@/lib/utils";
 import UserDashboardTopNav from '@/components/AppTopNav/AppTopNav';
 
