@@ -8,41 +8,25 @@ import {
   SidebarRail,
   SidebarFooter
 } from "@/components/ui/sidebar";
-// import { NavUser } from "./NavUser";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import MenuItems from "@/data/Dashboard";
-// import { toast } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
 
 // This is sample data.
 
-export function AppSidebar() {
+const AppSidebar = () => {
   const [sideBarLinks, setSideBarLinks] = useState(MenuItems);
 
 //   const { student, logOut } = useAuth();
   const { pathname } = useLocation();
-//   const navigate = useNavigate();
-
-//   const handleLogout = async () => {
-//     try {
-//       await logOut();
-//       navigate({ to: "/" });
-//     } catch (error) {
-//       console.log(`This is the error Logging-Out ${error}`);
-//       toast.error("Error Loggin Out");
-//     }
-//   };
-
 
   // Get the SideBar NAVLINKS
   useEffect(()=>{
     if(pathname.startsWith('/userdashboard')){
       setSideBarLinks(MenuItems) 
     }
-    else{
-      setSideBarLinks(AdminSideBar)
-    }
+    
   }, [pathname])
 
   return (
@@ -84,3 +68,5 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
+
+export default AppSidebar;
