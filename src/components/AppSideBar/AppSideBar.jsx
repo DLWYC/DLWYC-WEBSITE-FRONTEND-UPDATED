@@ -30,11 +30,11 @@ const AppSidebar = () => {
   }, [pathname])
 
   return (
-    <Sidebar className="lg:bg-primary font-rubik z-[600]">
-      <SidebarHeader >
+    <Sidebar className="bg-[white] font-rubik z-[600]">
+      <SidebarHeader className="bg-white" >
           <img src="/main_logo.svg" alt="" />
       </SidebarHeader>
-      <SidebarContent className='lg:bg-transparent lg:text-white text-black mt-4'>
+      <SidebarContent className='bg-[white] lg:text-white text-black pt-5'>
         {sideBarLinks.map((item, idx) => (
           <Link to={item.url} key={idx}>
             <SidebarGroup
@@ -62,7 +62,7 @@ const AppSidebar = () => {
       <SidebarRail />
 
       {/* Footer */}
-      <SidebarFooter>
+      <SidebarFooter className="bg-white">
         <p className="text-[13px]">Developed By DLWYC</p>
       </SidebarFooter>
     </Sidebar>

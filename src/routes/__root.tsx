@@ -9,7 +9,7 @@ export const Route = createRootRoute({
     console.log(location.pathname)
     return (
       <>
-        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID} key={import.meta.env.VITE_GOOGLE_CLIENT_KEY}>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID} >
           
           {location.pathname.startsWith('/userdashboard') ? null : <NavBar />}
           <Outlet />

@@ -7,7 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import UserProfileImage from '@/components/UserProfileImage/UserProfileImage'
 import { useNavigate } from "@tanstack/react-router";
 import {userDashboardTopMenu} from "@/data/Dashboard"
 import { Power } from "lucide-react";
@@ -18,7 +19,7 @@ import { Power } from "lucide-react";
 const UserDashboardTopNav = () => {
      const navigate = useNavigate();
      return (
-          <div className="flex items-center justify-between border-0 py-3 px-5">
+          <div className="flex items-center justify-between border w-[100%] py-3 px-5 sticky bg-white top-0 z-[20] ">
           {/* Left Alignment */}
           <div className="left">
                <SidebarTrigger className="flex cursor-pointer" />
@@ -29,10 +30,8 @@ const UserDashboardTopNav = () => {
                <div className="flex font-inter">
                     <DropdownMenu>
                     <DropdownMenuTrigger className="cursor-pointer">
-                         <Avatar>
-                              <AvatarImage src="https://github.com/shadcn.png" />
-                              <AvatarFallback>CN</AvatarFallback>
-                         </Avatar>
+                                        <UserProfileImage imageWidth={35} />
+
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent className="bg-white rounded-[5px] top-[10px] right-[20px] relative font-inter">
@@ -41,10 +40,7 @@ const UserDashboardTopNav = () => {
 
                     <DropdownMenuItem>
                          <div className="flex items-center space-x-4">
-                              <Avatar>
-                                   <AvatarImage src="https://github.com/shadcn.png" />
-                                   <AvatarFallback>CN</AvatarFallback>
-                              </Avatar>
+                                             <UserProfileImage imageWidth={30} />
                               <div>
                                    <h2 className="text-[14px] font-[400] text-[#30373eff]">Chinedu Okeke</h2>
                                    <p className="text-[13px] font-[400] text-primary-main">timmyaof02@gmail.com</p>

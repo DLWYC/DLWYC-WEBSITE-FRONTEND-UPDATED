@@ -24,8 +24,9 @@ function RouteComponent() {
   };
 
   const handleGoogleLogin = (credentialResponse) => {
+    console.log(credentialResponse);
     localStorage.setItem("token", credentialResponse.credential);
-    // navigate("/userdashboard");
+
   };
 
 return (
@@ -63,6 +64,7 @@ return (
         <div className="mt-4 flex ">
           <GoogleLogin
             onSuccess={handleGoogleLogin}
+            // flow: 'auth-code',
             onError={() => alert("Google Login Failed")}
           />
         </div>

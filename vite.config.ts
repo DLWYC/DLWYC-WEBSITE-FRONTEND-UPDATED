@@ -3,7 +3,8 @@ import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { resolve } from 'node:path'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,7 +19,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': resolve(dirname(fileURLToPath(import.meta.url)), './src'),
     },
   },
 })
