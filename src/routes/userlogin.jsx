@@ -2,26 +2,47 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {useAuth} from "@/lib/AuthContext"
 
-export const Route = createFileRoute('/auth/userlogin')({
+export const Route = createFileRoute('/userlogin')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-    const [email, setEmail] = useState("");
+  const {login, loginIsLoading} = useAuth()
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-   const navigate = useNavigate();
+  const values = {
+    email: email.toLowerCase(),
+    password: password
+  }
 
-   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-     const res = await axios.post(import.meta.env.VITE_BACKEND_URL, { email, password });
-      localStorage.setItem("token", res.data.token);
-      navigate("/udashboard");
-    } catch (err) {
-      alert("Login failed");
-    }
-  };
+    
+     const handleLogin = async () =>{
+      if(!values.email){
+        toast.error("Please Enter Your Email")
+        return
+      }
+      if(!values.password){
+        toast.error("Please Enter Your Password")
+        return 
+      }
+
+      try{
+         const res = await login({values})
+         toast.success(res?.data?.message)
+         navigate({to: '/userdashboard'});
+      }
+      catch(error){
+        toast.error(error?.error || "Login Failed🤧")
+      }
+      
+      console.log("herer", email)
+     }
+   
 
   const handleGoogleLogin = (credentialResponse) => {
     console.log(credentialResponse);
@@ -34,7 +55,7 @@ return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <form onSubmit={handleLogin} className="space-y-4">
+        <div className="space-y-4">
           <input
             type="email"
             placeholder="Email"
@@ -52,13 +73,14 @@ return (
           />
 
           <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            // type="submit"
+            className="w-full bg-primary-main text-white py-2 rounded-lg cursor-pointer hover:bg-reddish duration-100 transition-all"
+            onClick={handleLogin}
           >
-            Login
+          {loginIsLoading ? <span class="loader"></span> : "Login"}
           </button>
 
-        </form>
+        </div>
 
         {/* Google OAuth */}
         <div className="mt-4 flex ">

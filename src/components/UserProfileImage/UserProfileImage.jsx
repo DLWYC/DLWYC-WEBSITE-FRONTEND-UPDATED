@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { UserIcon } from "lucide-react"
 
 
-const UserProfileImage = ({imageWidth}) =>(
+const UserProfileImage = ({imageWidth, profilePicture}) =>(
  <Avatar
     style={{
       width: `${imageWidth}px`,
@@ -10,7 +10,7 @@ const UserProfileImage = ({imageWidth}) =>(
     }}
     className="flex place-content-center items-center"
   >
-    <AvatarImage src="https://github.com/shadcn.png" />
+    <AvatarImage src={profilePicture} />
         <AvatarFallback className="border-primary-main"><UserIcon color="#091e54" /></AvatarFallback>
 
   </Avatar>

@@ -8,19 +8,23 @@ import {
   SidebarRail,
   SidebarFooter
 } from "@/components/ui/sidebar";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import MenuItems from "@/data/Dashboard";
 import { useState } from "react";
 import { useEffect } from "react";
+import {useAuth} from "@/lib/AuthContext"
+import { toast } from "react-toastify";
 
 // This is sample data.
 
 const AppSidebar = () => {
   const [sideBarLinks, setSideBarLinks] = useState(MenuItems);
-
-//   const { student, logOut } = useAuth();
   const { pathname } = useLocation();
+  const { logout } = useAuth()
+    const navigate = useNavigate();
+  
 
+  
   // Get the SideBar NAVLINKS
   useEffect(()=>{
     if(pathname.startsWith('/userdashboard')){
@@ -28,6 +32,9 @@ const AppSidebar = () => {
     }
     
   }, [pathname])
+  
+
+
 
   return (
     <Sidebar className="bg-[white] font-rubik z-[600]">
@@ -52,12 +59,7 @@ const AppSidebar = () => {
           </Link>
         ))}
 
-        <SidebarGroupLabel
-          className="mt-[50px] cursor-pointer px-4 py-[20px] text-[15px] bg-red text-white"
-          onClick={() => handleLogout()}
-        >
-          Log-Out
-        </SidebarGroupLabel>
+
       </SidebarContent>
       <SidebarRail />
 

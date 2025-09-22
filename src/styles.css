@@ -275,6 +275,64 @@ nav ul li a {
 
 
 
+/* Loaders */
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #FFF;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.loader::after {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid;
+  border-color: #091e54 transparent;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+
+
+.text_loader {
+   width: 10px;
+   height: 10px;
+   background: #474bff;
+   color: #474bff;
+   border-radius: 50%;
+   box-shadow: 10px 0,-26.9px 0;
+   animation: dots-h5boszmd 0.5s infinite linear alternate;
+}
+
+@keyframes dots-h5boszmd {
+   50% {
+      box-shadow: 12px 0,-12px 0;
+   }
+
+   100% {
+      box-shadow: 26.9px 0,-13px 0;
+   }
+}
+/* Loaders */
+
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

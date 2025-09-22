@@ -12,12 +12,28 @@ import UserProfileImage from '@/components/UserProfileImage/UserProfileImage'
 import { useNavigate } from "@tanstack/react-router";
 import {userDashboardTopMenu} from "@/data/Dashboard"
 import { Power } from "lucide-react";
+import {useAuth} from '@/lib/AuthContext'
+import { toast } from "react-toastify";
 
 
 
 
 const UserDashboardTopNav = () => {
+     const {logout, userData} = useAuth()
      const navigate = useNavigate();
+
+       const handleLogOut = async () =>{
+           try{
+             await logout()
+             toast.info("Logout Successfully")
+             navigate({to: '/userLogin'})
+           }
+           catch(err){
+             console.log(err)
+             toast.error("Error Logging Out")
+           }
+       }
+
      return (
           <div className="flex items-center justify-between border w-[100%] py-3 px-5 sticky bg-white top-0 z-[20] ">
           {/* Left Alignment */}
@@ -30,7 +46,7 @@ const UserDashboardTopNav = () => {
                <div className="flex font-inter">
                     <DropdownMenu>
                     <DropdownMenuTrigger className="cursor-pointer">
-                                        <UserProfileImage imageWidth={35} />
+                                        <UserProfileImage imageWidth={35} profilePicture={userData?.profilePicture} />
 
                     </DropdownMenuTrigger>
 
@@ -42,8 +58,8 @@ const UserDashboardTopNav = () => {
                          <div className="flex items-center space-x-4">
                                              <UserProfileImage imageWidth={30} />
                               <div>
-                                   <h2 className="text-[14px] font-[400] text-[#30373eff]">Chinedu Okeke</h2>
-                                   <p className="text-[13px] font-[400] text-primary-main">timmyaof02@gmail.com</p>
+                                   <h2 className="text-[14px] font-[400] text-[#30373eff]">{userData?.fullName}</h2>
+                                   <p className="text-[13px] font-[400] text-primary-main">{userData?.email}</p>
                               </div>
                          </div>
                     </DropdownMenuItem>
@@ -58,11 +74,14 @@ const UserDashboardTopNav = () => {
                     ))}
 
                     <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-red-500 flex items-center gap-3 cursor-pointer">
-        <Power className="text-red-500"/>
+        <div className="text-red-500 gap-3 cursor-pointer px-2 py-1.5 text-sm">
+        <p className="flex items-center gap-3" onClick={handleLogOut}>
+
+        <Power className="text-red-500 size-[16px]"/>
           Log out
           {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
-        </DropdownMenuItem>
+        </p>
+        </div>
                     </DropdownMenuContent>
                     </DropdownMenu>
                </div>

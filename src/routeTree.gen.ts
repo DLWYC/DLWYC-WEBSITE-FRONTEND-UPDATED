@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UserloginRouteImport } from './routes/userlogin'
 import { Route as UserdashboardRouteImport } from './routes/userdashboard'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,10 +19,15 @@ import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as UserdashboardProfileRouteImport } from './routes/userdashboard/profile'
 import { Route as UserdashboardEventhistoryRouteImport } from './routes/userdashboard/eventhistory'
 import { Route as EventsIdRouteImport } from './routes/events/$id'
-import { Route as AuthUserloginRouteImport } from './routes/auth/userlogin'
 import { Route as AboutChaplainsRouteImport } from './routes/about/chaplains'
 import { Route as AboutChairmansRouteImport } from './routes/about/chairmans'
+import { Route as UserdashboardEventIdRouteImport } from './routes/userdashboard/event/$id'
 
+const UserloginRoute = UserloginRouteImport.update({
+  id: '/userlogin',
+  path: '/userlogin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UserdashboardRoute = UserdashboardRouteImport.update({
   id: '/userdashboard',
   path: '/userdashboard',
@@ -68,11 +74,6 @@ const EventsIdRoute = EventsIdRouteImport.update({
   path: '/events/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthUserloginRoute = AuthUserloginRouteImport.update({
-  id: '/auth/userlogin',
-  path: '/auth/userlogin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutChaplainsRoute = AboutChaplainsRouteImport.update({
   id: '/about/chaplains',
   path: '/about/chaplains',
@@ -83,48 +84,56 @@ const AboutChairmansRoute = AboutChairmansRouteImport.update({
   path: '/about/chairmans',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserdashboardEventIdRoute = UserdashboardEventIdRouteImport.update({
+  id: '/event/$id',
+  path: '/event/$id',
+  getParentRoute: () => UserdashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
   '/userdashboard': typeof UserdashboardRouteWithChildren
+  '/userlogin': typeof UserloginRoute
   '/about/chairmans': typeof AboutChairmansRoute
   '/about/chaplains': typeof AboutChaplainsRoute
-  '/auth/userlogin': typeof AuthUserloginRoute
   '/events/$id': typeof EventsIdRoute
   '/userdashboard/eventhistory': typeof UserdashboardEventhistoryRoute
   '/userdashboard/profile': typeof UserdashboardProfileRoute
   '/about': typeof AboutIndexRoute
   '/events': typeof EventsIndexRoute
   '/userdashboard/': typeof UserdashboardIndexRoute
+  '/userdashboard/event/$id': typeof UserdashboardEventIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
+  '/userlogin': typeof UserloginRoute
   '/about/chairmans': typeof AboutChairmansRoute
   '/about/chaplains': typeof AboutChaplainsRoute
-  '/auth/userlogin': typeof AuthUserloginRoute
   '/events/$id': typeof EventsIdRoute
   '/userdashboard/eventhistory': typeof UserdashboardEventhistoryRoute
   '/userdashboard/profile': typeof UserdashboardProfileRoute
   '/about': typeof AboutIndexRoute
   '/events': typeof EventsIndexRoute
   '/userdashboard': typeof UserdashboardIndexRoute
+  '/userdashboard/event/$id': typeof UserdashboardEventIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
   '/userdashboard': typeof UserdashboardRouteWithChildren
+  '/userlogin': typeof UserloginRoute
   '/about/chairmans': typeof AboutChairmansRoute
   '/about/chaplains': typeof AboutChaplainsRoute
-  '/auth/userlogin': typeof AuthUserloginRoute
   '/events/$id': typeof EventsIdRoute
   '/userdashboard/eventhistory': typeof UserdashboardEventhistoryRoute
   '/userdashboard/profile': typeof UserdashboardProfileRoute
   '/about/': typeof AboutIndexRoute
   '/events/': typeof EventsIndexRoute
   '/userdashboard/': typeof UserdashboardIndexRoute
+  '/userdashboard/event/$id': typeof UserdashboardEventIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,51 +141,54 @@ export interface FileRouteTypes {
     | '/'
     | '/gallery'
     | '/userdashboard'
+    | '/userlogin'
     | '/about/chairmans'
     | '/about/chaplains'
-    | '/auth/userlogin'
     | '/events/$id'
     | '/userdashboard/eventhistory'
     | '/userdashboard/profile'
     | '/about'
     | '/events'
     | '/userdashboard/'
+    | '/userdashboard/event/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/gallery'
+    | '/userlogin'
     | '/about/chairmans'
     | '/about/chaplains'
-    | '/auth/userlogin'
     | '/events/$id'
     | '/userdashboard/eventhistory'
     | '/userdashboard/profile'
     | '/about'
     | '/events'
     | '/userdashboard'
+    | '/userdashboard/event/$id'
   id:
     | '__root__'
     | '/'
     | '/gallery'
     | '/userdashboard'
+    | '/userlogin'
     | '/about/chairmans'
     | '/about/chaplains'
-    | '/auth/userlogin'
     | '/events/$id'
     | '/userdashboard/eventhistory'
     | '/userdashboard/profile'
     | '/about/'
     | '/events/'
     | '/userdashboard/'
+    | '/userdashboard/event/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GalleryRoute: typeof GalleryRoute
   UserdashboardRoute: typeof UserdashboardRouteWithChildren
+  UserloginRoute: typeof UserloginRoute
   AboutChairmansRoute: typeof AboutChairmansRoute
   AboutChaplainsRoute: typeof AboutChaplainsRoute
-  AuthUserloginRoute: typeof AuthUserloginRoute
   EventsIdRoute: typeof EventsIdRoute
   AboutIndexRoute: typeof AboutIndexRoute
   EventsIndexRoute: typeof EventsIndexRoute
@@ -184,6 +196,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/userlogin': {
+      id: '/userlogin'
+      path: '/userlogin'
+      fullPath: '/userlogin'
+      preLoaderRoute: typeof UserloginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/userdashboard': {
       id: '/userdashboard'
       path: '/userdashboard'
@@ -247,13 +266,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/userlogin': {
-      id: '/auth/userlogin'
-      path: '/auth/userlogin'
-      fullPath: '/auth/userlogin'
-      preLoaderRoute: typeof AuthUserloginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about/chaplains': {
       id: '/about/chaplains'
       path: '/about/chaplains'
@@ -268,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutChairmansRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/userdashboard/event/$id': {
+      id: '/userdashboard/event/$id'
+      path: '/event/$id'
+      fullPath: '/userdashboard/event/$id'
+      preLoaderRoute: typeof UserdashboardEventIdRouteImport
+      parentRoute: typeof UserdashboardRoute
+    }
   }
 }
 
@@ -275,12 +294,14 @@ interface UserdashboardRouteChildren {
   UserdashboardEventhistoryRoute: typeof UserdashboardEventhistoryRoute
   UserdashboardProfileRoute: typeof UserdashboardProfileRoute
   UserdashboardIndexRoute: typeof UserdashboardIndexRoute
+  UserdashboardEventIdRoute: typeof UserdashboardEventIdRoute
 }
 
 const UserdashboardRouteChildren: UserdashboardRouteChildren = {
   UserdashboardEventhistoryRoute: UserdashboardEventhistoryRoute,
   UserdashboardProfileRoute: UserdashboardProfileRoute,
   UserdashboardIndexRoute: UserdashboardIndexRoute,
+  UserdashboardEventIdRoute: UserdashboardEventIdRoute,
 }
 
 const UserdashboardRouteWithChildren = UserdashboardRoute._addFileChildren(
@@ -291,9 +312,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GalleryRoute: GalleryRoute,
   UserdashboardRoute: UserdashboardRouteWithChildren,
+  UserloginRoute: UserloginRoute,
   AboutChairmansRoute: AboutChairmansRoute,
   AboutChaplainsRoute: AboutChaplainsRoute,
-  AuthUserloginRoute: AuthUserloginRoute,
   EventsIdRoute: EventsIdRoute,
   AboutIndexRoute: AboutIndexRoute,
   EventsIndexRoute: EventsIndexRoute,

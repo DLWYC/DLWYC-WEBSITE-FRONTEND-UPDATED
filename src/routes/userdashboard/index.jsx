@@ -1,43 +1,53 @@
-import { createFileRoute} from '@tanstack/react-router'
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card"
-import {Events, DashboardCards} from "@/data/Dashboard"
+import { createFileRoute, Link} from '@tanstack/react-router'
+import { Card, CardContent } from "@/components/ui/card"
+import {DashboardCards} from "@/data/Dashboard"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Calendar as CalenderIcon } from 'lucide-react'
+import { CalendarClockIcon, Calendar as CalenderIcon, MapPin, TimerIcon } from 'lucide-react'
 import UserProfileImage from '@/components/UserProfileImage/UserProfileImage'
 import { Calendar } from "@/components/ui/calendar"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatDate } from 'date-fns/format'
 import NotFound from '@/assets/Dashboard/notfound.png'
+import {useAuth} from '@/lib/AuthContext'
+
 
 export const Route = createFileRoute('/userdashboard/')({
   component: UserDashboard,
 })
 
+
+
 function UserDashboard() {
+  const {userData, isLoadingUserData, allEvent, userRegisteredEvents, fetchingAllEvents, errorLoadingEvents} = useAuth()
   const [date, setDate] = useState(new Date())
-  const [filteredEvents, setFilteredEvents] = useState(Events);
+  const [filteredEvents, setFilteredEvents] = useState(allEvent);
 
+
+
+  // Load All Events FIrst
+  useEffect(()=>{
+    setFilteredEvents(allEvent);
+  }, [allEvent])
+  
+
+  // Handle Calendar Filtering
 const handleFilter = () => {
-  if (!date) {
-    // If no date is selected, show all events
-    setFilteredEvents(Events);
-    return;
+      if (!date) {
+    setFilteredEvents(allEvent);
+    return
   }
-
   const selectedDateString = formatDate(date, "yyyy-MM-dd");
-
-  const newFilteredEvents = Events.filter(event => {
-    // Format the event date to a string for comparison
-    const eventDateString = formatDate(event.date, "yyyy-MM-dd");
-    console.log(eventDateString, selectedDateString)
+  const newFilteredEvents = allEvent.filter(event => {
+    const eventDate = event.eventDate.split("T")[0]
+    const eventDateString = formatDate(eventDate, "yyyy-MM-dd");
     return eventDateString == selectedDateString;
   });
-
   setFilteredEvents(newFilteredEvents);
 };
+
+// console.log(filtere)
+
+
 
 
   return (
@@ -47,10 +57,16 @@ const handleFilter = () => {
                <div className="rounded-[5px] border text-primary-main  px-5 py-3 flex flex-wrap lg:flex-row flex-col lg:items-center">
                 <UserProfileImage imageWidth={60} />
                 <div className="flex justify-center flex-col lg:px-5 font-rubik">
-                <h3 className="text-[30px] font-[500] ">Welcome back, Timilehin</h3>
+                <h3 className="text-[30px] font-[500] flex items-center">Welcome back, 
+                  { isLoadingUserData ? <span className="loader"></span> : userData?.fullName} 😁
+                 </h3>
                 <div className='flex lg:flex-row flex-col lg:gap-9'>
-                <p className='text-[#64748B] text-[14px]'>Email: timmyaof02@gmail.com</p>
-                <p className='text-[#64748B] text-[14px]'>Unique ID: DLWYC/13/8627</p>
+                <p className='text-[#64748B] text-[14px] flex items-center'>Email:  
+                 { isLoadingUserData ? <span className="loader"></span> : userData?.email}
+                </p>
+                <p className='text-[#64748B] text-[14px] flex items-center'>Unique ID:  
+                 { isLoadingUserData ? <span className="loader"></span> : userData?.uniqueId}
+                </p>
                 </div>
                 </div>
                </div>
@@ -60,11 +76,14 @@ const handleFilter = () => {
                 <div className="flex  space-y-2 ">
                 <div className="p-1 basis-[100%] grid lg:grid-cols-3 gap-4  font-inter">
                 {DashboardCards.map((_, index) => (
-                           <Card key={index}>
-                             <CardContent className="flex border justify-center space-y-2 flex-col rounded-[5px] px-[20px] py-[15px] bg-white border-[#e8e8e8]">
+                           <Card key={index} className="border border-[#e8e8e8] rounded-[5px] overflow-hidden">
+                             <CardContent className="flex justify-center space-y-2 flex-col px-[20px] py-[15px] bg-white ">
                              
-                               <h3 className="text-rubik text-[#64748B] text-[14px] flex items-center gap-2"> {_.icon && <_.icon className={`w-[15px]`} color={`${_.IconColor}`} />}{_.text}</h3>
-                               <p className="text-[24px] font-[600] tracking-[1.3px] text-[#1E293B]">{_.number}</p>
+                               <h3 className="text-rubik text-[#64748B] text-[14px] flex items-center gap-2"> {_.icon && <_.icon className={`w-[15px]`} color={`${_.IconColor}`} />} {_.text}</h3>
+                               <p className="text-[24px] font-[600] tracking-[1.3px] text-[#1E293B]">
+                               {/* {fetchingAllEvents} */}
+                               {fetchingAllEvents ? <span className="loader"></span> : index == 0 ? allEvent?.length : index == 1 ?  userRegisteredEvents?.length : _.number} 
+                               </p>
                              </CardContent>
                            </Card>
                 ))}
@@ -76,46 +95,44 @@ const handleFilter = () => {
 
              {/* Upcoming Events */}
              <div className=" flex lg:flex-row flex-col p-1 gap-5 font-inter">
-                <div className="basis-[70%] border bg-white px-6 py-6 space-y-3 ">
-                  {/*  */}
+                <div className="basis-[70%] border bg-white px-6 py-6 space-y-3 ">                  
                 <div className=" flex justify-between items-center">
                   <h3 className="text-[#64748B] text-[15px] font-[400]">Upcoming Events</h3>
-                  <p className='text-[#64748B] text-[14px] flex items-center gap-2'>{filteredEvents.length} Events <CalenderIcon className='w-[13px]' /></p>
+                  <p className='text-[#64748B] text-[14px] flex items-center gap-2'>{filteredEvents?.length} Events <CalenderIcon className='w-[13px]' /></p>
                 </div>
-                  {/*  */}
-
-                  {/*  */}
-                  <ScrollArea className={`${filteredEvents.length === 0 ? 'flex items-center justify-center' : ''} h-[420px] w-full`}>
+                  <ScrollArea className={`${filteredEvents?.length === 0 ? 'flex items-center justify-center' : ''} h-[420px] w-full`}>
                     <div className='space-y-4'>
-                  {filteredEvents.length === 0 ? ( 
+                               {/* { : ''} */}
+
+                  {fetchingAllEvents ? <span className="loader"></span> : errorLoadingEvents ? "sdfsdf" : filteredEvents?.length === 0 ? ( 
                     <div className="border flex flex-col justify-center items-center h-[410px] space-y-5">
                     <img src={NotFound} alt="" className='w-[90px]' />
                     <p className='text-red-500'>Sorry No Event For The Day</p>
                     </div>
-                  ):filteredEvents.map((_, index) => (
+                  ):filteredEvents?.map((_, index) => (
                              <div key={index} className="flex border justify-center space-y-2 flex-col rounded-[5px] px-[20px] py-[15px] bg-white border-[#e8e8e8]">
                               
                               <div className="flex justify-between items-center ">
-                               <h3 className="text-rubik text-[#1E293B] text-[17px] font-[500] flex items-center gap-2">{_.text}</h3>
-                               <p className="text-rubik text-[#1E293B] text-[13px] flex items-center "><span className={`${_.registrationStatus == "Registered" ? 'text-[green]' : _.registrationStatus == "Not Registered" ? 'text-[red]': 'text-[orange]' }`}>{_.registrationStatus}</span></p>
+                               <h3 className="text-rubik text-[#1E293B] text-[17px] font-[500] flex items-center gap-2">{_.eventTitle}</h3>
+                               <p className="text-rubik text-[#1E293B] text-[13px] flex items-center "><span className={`${_.isRegistered ? 'text-[green]' :'text-[red]' }`}>{_.isRegistered ? "Registered" : "Not Registered"}</span></p>
                               </div>
 
                                <div className="flex flex-wrap items-center lg:gap-5 gap-2">
-                                <p className="text-[#64748B] text-[14px] flex items-center gap-1">  {_.eventDateIcon && <_.eventDateIcon className={`w-[14px]`} />}{_.eventDate}</p>
-                                <p className="text-[#64748B] text-[14px] flex items-center gap-1">  {_.timeIcon && <_.timeIcon className={`w-[14px]`} />}{_.time}</p>
-                                <p className="text-[#64748B] text-[14px] flex items-center gap-1">  {_.locationIcon && <_.locationIcon className={`w-[14px]`} />}{_.location}</p>
+                                <p className="text-[#64748B] text-[14px] flex items-center gap-1">  <CalendarClockIcon className={`w-[14px]`} />{_.eventDate.split("T")[0]}</p>
+                                <p className="text-[#64748B] text-[14px] flex items-center gap-1">  <TimerIcon className={`w-[14px]`} />{_.eventTime}</p>
+                                <p className="text-[#64748B] text-[14px] flex items-center gap-1"> <MapPin className={`w-[14px]`} />{_.eventLocation}</p>
                                </div>
                              
                              
                              <div className="flex justify-end">
-                              <a className='text-[14px] transition-all duration-150 border border-primary-main hover:bg-primary-main hover:text-white px-[30px] py-[7px] cursor-pointer '>Register</a>
+                              <Link to={`event/${_._id}`} className='text-[14px] transition-all duration-150 border border-primary-main hover:bg-primary-main hover:text-white px-[30px] py-[7px] cursor-pointer '>Register</Link>
                              </div>
                              </div>
 
                   ))}
                            </div>
                 </ScrollArea> 
-                  {/*  */}
+                  
                 </div>
 
 
@@ -131,7 +148,9 @@ const handleFilter = () => {
 
                   <div className="border space-y-3 grid">
                     <p>Select Date To Find Event For That Day</p>
-                  <button className='text-[14px] transition-all duration-150 border border-primary-main hover:bg-primary-main hover:text-white px-[30px] py-[7px] cursor-pointer' onClick={handleFilter}>Find Events</button>
+                  <button className='text-[14px] transition-all duration-150 border border-primary-main hover:bg-primary-main hover:text-white px-[30px] py-[7px] cursor-pointer' 
+                  onClick={handleFilter}
+                  >Find Events</button>
                   </div>
                 </div>
              </div>

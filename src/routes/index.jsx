@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import BannerImage from '@/assets/homepage/ChaplainBanner.svg'
 import Bishop from '@/assets/bishop.jpg'
 import Chaplain from '@/assets/homepage/chaplain.jpg'
@@ -7,6 +7,7 @@ import EventCard from '@/components/Cards/Event'
 import EventData from '@/data/Events'
 import Section from '@/components/Section/section'
 import Button from '@/components/Button/Button'
+
 
 export const Route = createFileRoute('/')({
   component: App,
