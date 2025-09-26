@@ -71,18 +71,17 @@ retry: false,
   const {data: userRegisteredEvents, isLoading: fetchingUserRegisteredEventsLoadingStatus, isError: errorLoadingUserRegisteredEvents} = useQuery({
     queryKey: ['userRegisteredEvents', user?.uniqueId],
     queryFn: async () =>{
-      console.log('Fetching registered events for user:', user?.uniqueId, 'fullName:', user?.fullName); 
+      // console.log('Fetching registered events for user:', user?.uniqueId, 'fullName:', user?.fullName); 
       const userRegisteredEvents = await axios.get(`${backendUrl}/api/userRegisteredEvents/${user?.fullName}/${user?.uniqueId}`)
-      console.log("userRegisteredEventsdsjfbskdjbfb", userRegisteredEvents)
+      // console.log("userRegisteredEventsdsjfbskdjbfb", userRegisteredEvents)
       
         return userRegisteredEvents.data.data
     },
     onError: (error)=>{
       console.log("Error: ", error)
     },
-    enabled: !!user,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    enabled: !!user?.uniqueId,
+    refetchOnWindowFocus: false,
     staleTime: 1000
   })
   // #:::::::::::::::  GET USER REGISETRED FUNCTION :::::::::::::::::#
@@ -102,18 +101,56 @@ const {
     const response = await axios.get(`${backendUrl}/api/admin/events`);
     const allEventsData = response.data.data;
 
-    // Safe now: userRegisteredEvents is loaded, or query is disabled
-    const registeredEventIds = new Set(userRegisteredEvents?.map((regEvent) => regEvent.eventId) || []);
-
-    const updatedEvents = allEventsData.map((event) => ({
-      ...event,
-      isRegistered: registeredEventIds.has(event._id),
-    }));
+       const registrationMap = new Map();
     
-    console.log({ "All Events": allEventsData})
+    if (userRegisteredEvents?.length) {
+      userRegisteredEvents.forEach(regEvent => {
+        registrationMap.set(regEvent.eventId, {
+          isRegistered: regEvent.paymentStatus == 'success' ? true : false,
+          paymentStatus: regEvent.paymentStatus,
+          registrationDate: regEvent.registrationDate, // if available
+          // Add other registration details as needed
+        });
+      });
+    }
+
+
+    console.log("This is the New MAPP insit", registrationMap)
+    // Process events with registration status
+    const updatedEvents = allEventsData.map((event) => {
+      const registrationInfo = registrationMap.get(event._id);
+      console.log("he Registration INFO:", registrationInfo)
+      return {
+        ...event,
+        // Clean boolean for registration status
+        isRegistered: registrationInfo?.isRegistered,
+        // Specific payment status (null if not registered)
+        paymentStatus: registrationInfo?.paymentStatus ,
+      };
+    });
+
+    console.log({
+      "Total Events": allEventsData.length,
+      "Registered Events": userRegisteredEvents?.length || 0,
+      "Updated Events Sample": updatedEvents // Log first 2 for debugging
+    });
+
+
+
     return updatedEvents;
+    // // Safe now: userRegisteredEvents is loaded, or query is disabled
+    // const registeredEventIds = new Set(userRegisteredEvents?.map((regEvent) => regEvent.eventId) || []);
+    // const registeredEventStatus = new Set(userRegisteredEvents?.map((regEvent) => regEvent.paymentStatus) || []);
+
+    // const updatedEvents = allEventsData.map((event) => ({
+    //   ...event,
+    //   isRegistered: registeredEventIds.has(event._id) ? registeredEventStatus : ""
+    // }));
+    
+    // console.log({ "Updated Events": updatedEvents, "User ECeve": registeredEventIds, "Status": registeredEventStatus})
+    // return updatedEvents;
   },
-  enabled: !!user && !fetchingUserRegisteredEventsLoadingStatus, // Depend on first query
+  enabled: !!user?.uniqueId && !fetchingUserRegisteredEventsLoadingStatus, // Depend on first query
   onSuccess: (updatedEvents) => {
     // console.log('Updated events:', updatedEvents);
     return updatedEvents // Moved here; proper array logging
@@ -136,43 +173,6 @@ const {
     queryClient.invalidateQueries({ queryKey: ['allEvents', user?.uniqueId] });
   }
 }, [user]);
-
-  // const {data: allEvent, isLoading: fetchingAllEvents, isError: errorLoadingEvents} = useQuery({
-  //   queryKey: ['allEvent', user?.uniqueId],
-  //   queryFn: async () =>{
-  //     const allEvents = await axios.get(`${backendUrl}/api/admin/events`)
-  //     console.log("allEvent Error", errorLoadingUserRegisteredEvents, fetchingUserRegisteredEventsLoadingStatus)
-      
-  //     const allEve =  allEvents.data.data
-      
-      
-      
-  //     const updatedEvents = allEve.map(event => {
-  //         const registeredEventIds = new Set(
-  //          userRegisteredEvents?.map(event => event.eventId)
-  //        );
-  //         if(fetchingUserRegisteredEventsLoadingStatus){
-  //           return {
-  //             ...event,
-  //             isRegistered: false,
-  //           };
-  //       }
-  //         const isRegistered = registeredEventIds.has(event._id);
-  //         return {
-  //           ...event,
-  //           isRegistered: isRegistered,
-  //         };
-  //       })
-        
-  //       console.log(`This is the updated Events: ${updatedEvents}`)
-  //       return updatedEvents
-  //     },
-  //       enabled: !!user,
-  //       refetchOnMount: true,
-  //       refetchOnWindowFocus: true
-  
-  // })
-  // })
   // #:::::::::::::::  GET ALL EVENT FUNCTION :::::::::::::::::#
   
 

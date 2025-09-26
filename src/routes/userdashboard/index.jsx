@@ -27,7 +27,7 @@ function UserDashboard() {
   // Load All Events FIrst
   useEffect(()=>{
     setFilteredEvents(allEvent);
-  }, [allEvent])
+  }, [allEvent, userRegisteredEvents])
   
 
   // Handle Calendar Filtering
@@ -104,18 +104,26 @@ const handleFilter = () => {
                     <div className='space-y-4'>
                                {/* { : ''} */}
 
-                  {fetchingAllEvents ? <span className="loader"></span> : errorLoadingEvents ? "sdfsdf" : filteredEvents?.length === 0 ? ( 
+                  {fetchingAllEvents ? <span className="loader"></span> : errorLoadingEvents ? "Please Refresh The Page" : filteredEvents?.length === 0 ? ( 
                     <div className="border flex flex-col justify-center items-center h-[410px] space-y-5">
                     <img src={NotFound} alt="" className='w-[90px]' />
                     <p className='text-red-500'>Sorry No Event For The Day</p>
                     </div>
                   ):filteredEvents?.map((_, index) => (
-                             <div key={index} className="flex border justify-center space-y-2 flex-col rounded-[5px] px-[20px] py-[15px] bg-white border-[#e8e8e8]">
+                             <div key={index} className="flex border justify-center space-y-2 flex-col rounded-[5px] px-[20px] py-[15px] bg-white border-[#e8e8e8]"> 
+                             {console.log("Front ednd", _.paymentStatus)}
                               
-                              <div className="flex justify-between items-center ">
-                               <h3 className="text-rubik text-[#1E293B] text-[17px] font-[500] flex items-center gap-2">{_.eventTitle}</h3>
-                               <p className="text-rubik text-[#1E293B] text-[13px] flex items-center "><span className={`${_.isRegistered ? 'text-[green]' :'text-[red]' }`}>{_.isRegistered ? "Registered" : "Not Registered"}</span></p>
-                              </div>
+
+                                <div className="flex justify-between items-center">
+  <h3 className="text-rubik text-[#1E293B] text-[17px] font-[500] flex items-center gap-2">
+    {_.eventTitle}
+  </h3>
+  <p className="text-rubik text-[#1E293B] text-[13px] flex items-center">
+    <span className={`${_.paymentStatus == 'success' ? 'text-[green]' : 'text-[red]'}`}>
+      {_.paymentStatus ? _.paymentStatus : "Not Registered"}
+    </span>
+  </p>
+</div>
 
                                <div className="flex flex-wrap items-center lg:gap-5 gap-2">
                                 <p className="text-[#64748B] text-[14px] flex items-center gap-1">  <CalendarClockIcon className={`w-[14px]`} />{_.eventDate.split("T")[0]}</p>
@@ -125,7 +133,7 @@ const handleFilter = () => {
                              
                              
                              <div className="flex justify-end">
-                              <Link to={`event/${_._id}`} className='text-[14px] transition-all duration-150 border border-primary-main hover:bg-primary-main hover:text-white px-[30px] py-[7px] cursor-pointer '>Register</Link>
+                              <Link to={`event/${_._id}`} disabled={_.paymentStatus == 'success' ? true : false} className={`${_.paymentStatus == 'success' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-primary-main hover:text-white'}  text-[14px] transition-all duration-150 border border-primary-main  px-[30px] py-[7px] `}>Register</Link>
                              </div>
                              </div>
 

@@ -1,3 +1,626 @@
+//   import { PaystackButton } from 'react-paystack';
+// import Male from "/male.png"
+// import Female from "/female.png"
+// import { Wallet } from 'lucide-react';
+// import axios from 'axios';
+// import { toast } from 'react-toastify';
+// import { useState } from 'react';
+// import { useNavigate } from '@tanstack/react-router'
+
+
+
+
+  
+//   function PayStack({userDetails, values, setValues, paymentOption }) {
+//      const payment_reference = (new Date()).getTime().toString()
+//      const backendURL = import.meta.env.VITE_BACKEND_URL
+//      const [userPaymentValues, setUserPaymentValues] = useState({})
+//      // const parts = userDetails?.uniqueId?.split('/');
+//      // const reference = (parts && parts.length > 2) ? `${parts[1]}${parts[2]}` : '';
+//      const amount = paymentOption == 'single' ? 2000 : 400000
+//      const [paymentStatus , setPaymentStatus] = useState()
+//      const navigate = useNavigate()
+
+
+//      // When the Paymet Gateway has been closed
+//      const handleSuccessAction = async (ref) =>{
+//           console.log("Success", ref)
+
+//           try{
+//                const response = await axios.get(`https://api.paystack.co/transaction/verify/${ref.reference}`, {
+//                     headers: {
+//                          "Authorization": `Bearer ${import.meta.env.VITE_PAYSTACK_SECRET_KEY}`
+//                     }
+//                })
+//                const { status, reference, channel, paid_at, id } = await response.data.data
+//                setUserPaymentValues({
+//                     ...values,
+//                     "paymentStatus": status,
+//                     "reference": reference,
+//                     "modeOfPayment": channel,
+//                     "paymentTime": paid_at,
+//                     "paymentOption": paymentOption,
+//                     "paymentID": id,
+//                })
+               
+//                console.log("THis is the respnse frpm base: ", response.data.data)
+//                console.log("THis is the userPaymentValues Values", userPaymentValues)
+
+//           // // if (status == "abandoned"){
+//                     await axios.post(`${backendURL}/api/userRegisteredEvents`, userPaymentValues)
+//                     .then(res=>{
+//                          console.log("This is the Response From The DB", res)
+//                          toast.success(`${res.response.data.message} Please Complete Payment To Register`)
+//                          navigate({to: '/userdashboard'})
+//                     })
+//                     .catch(err=>{
+//                          console.log("ERERER", err)
+//                          toast.error(`Error: ${err?.response?.data?.errors?.error}`)
+//                          navigate({to: '/userdashboard'})
+//                     })
+//           }
+//           catch(err){
+//                console.log("This is the errr", err)
+//           }
+//      }
+
+
+//      // When the Paymet Gateway has been closed
+//      const handleErrorAction = async () =>{
+//           const response = await axios.get(`https://api.paystack.co/transaction/verify/${payment_reference}`, {
+//                          headers: {
+//                          "Authorization": `Bearer ${import.meta.env.VITE_PAYSTACK_SECRET_KEY}`
+//                     }
+//                })
+//                console.log("Response Frm PAYSTACK", response)
+//           const { status, reference, channel, paid_at, id } = await response.data.data
+//           setValues({
+//                     ...values,
+//                     "paymentStatus": status,
+//                     "reference": reference,
+//                     "modeOfPayment": channel,
+//                     "paymentTime": paid_at,
+//                     "paymentOption": paymentOption,
+//                     "paymentID": id,
+//           })
+          
+//           // if (status == "abandoned"){
+//                     await axios.post(`${backendURL}/api/userRegisteredEvents`, values)
+//                     .then(res=>{
+//                          console.log("This is the Response From The DB", res)
+//                          toast.warning(`${res.response.data.message} Please Complete Payment To Register`)
+//                          navigate({to: '/userdashboard'})
+//                     })
+//                     .catch(err=>{
+//                          console.log("ERERER", err?.response?.data?.errors?.error)
+//                          toast.error(`Error: ${err?.response?.data?.errors?.error}`)
+//                          navigate({to: '/userdashboard'})
+//                     })
+//           // }
+//           console.log("Closed The Payment Gateway")
+//      }
+
+//      const handleError = (err)=>{
+//           console.log("sdsssssssss: ",err)
+//      }
+
+
+//      const componentProps = {
+//           publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+//           reference: payment_reference,
+//           email: userDetails?.email,
+//           amount: amount * 100, 
+//           currency: 'NGN',
+//           text: paymentStatus == "pending" ? <span class="loader"></span> : 'Proceed To Payment',
+//           metadata: {
+//                userId: userDetails?.uniqueId,
+//                fullName: userDetails?.fullName,
+//                paymentOption: paymentOption,
+//           },
+
+//           // 
+//           onSuccess: (userReference)=> handleSuccessAction(userReference),
+//           onClose: (userReference) => handleErrorAction(userReference),
+//      }
+
+//     return (
+//       <div className="lg:flex grid items-center gap-4">
+//           <div className="lg:basis-[50%] basis-[100%] grid place-content-center">
+
+//                     <img src={userDetails?.gender == 'Male' ?  Male : Female} alt="" className='w-[300px]'/>
+//           </div>
+         
+//          <div className="grid items-center lg:basis-[50%] basis-[100%] gap-4 ">
+//          <h2 className="flex items-center text-[20px] py-3"> <Wallet className='mr-3 w-[30px]' /> Your Payment Details</h2>
+
+//           <div className=" space-y-3 ">
+//           <p className='text-[14px]'>  Name: <span className='ml-3 font-[500] text-primary-main'> {userDetails?.fullName} </span> </p>
+//           <p className='text-[14px]'>  Email: <span className='ml-3 font-[500] text-primary-main'> {userDetails?.email} </span> </p>
+//           <p className='text-[14px]'>  Unique ID: <span className='ml-3 font-[500] text-primary-main'> {userDetails?.uniqueId} </span> </p>
+//           </div>
+          
+//           <div className="mb-4 space-y-3">
+//           <p className='text-[14px]'>  Reference ID: <span className='ml-3 font-[500] text-reddish'> {payment_reference} </span> </p>
+//           <p className='text-[14px]'>  Amount: <span className='ml-3 font-[500] text-reddish'> {amount} </span> </p>
+//           </div>
+
+//         <PaystackButton className='bg-primary-main [padding:var(--spacing-button)] rounded-sm hover:bg-text-header text-white transition ease-in-out delay-20 cursor-pointer' {...componentProps} />
+//          </div>
+//       </div>
+//     );
+//   }
+  
+//   export default PayStack;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// #:::::::::::::::  GET USER REGISTERED EVENTS :::::::::::::::::#
+const {
+  data: userRegisteredEvents,
+  isLoading: fetchingUserRegisteredEvents,
+  isError: errorLoadingUserRegisteredEvents
+} = useQuery({
+  queryKey: ['userRegisteredEvents', user?.uniqueId],
+  queryFn: async () => {
+    console.log('Fetching registered events for user:', user?.uniqueId);
+    const response = await axios.get(
+      `${backendUrl}/api/userRegisteredEvents/${user?.fullName}/${user?.uniqueId}`
+    );
+    return response.data.data;
+  },
+  enabled: !!user?.uniqueId, // More specific check
+  onError: (error) => {
+    console.error("Error fetching user registered events:", error);
+  },
+  staleTime: 5 * 60 * 1000, // 5 minutes instead of 1 second
+  refetchOnWindowFocus: false, // Reduce unnecessary refetches
+});
+
+// #:::::::::::::::  GET ALL EVENTS WITH REGISTRATION STATUS :::::::::::::::::#
+const {
+  data: allEventsWithStatus,
+  isLoading: fetchingAllEvents,
+  isError: errorLoadingEvents,
+} = useQuery({
+  queryKey: ['allEventsWithStatus', user?.uniqueId],
+  queryFn: async () => {
+    console.log('Fetching all events and processing registration status');
+    
+    // Fetch all events
+    const response = await axios.get(`${backendUrl}/api/admin/events`);
+    const allEventsData = response.data.data;
+
+    // Create a Map for O(1) lookup of registration data by eventId
+    const registrationMap = new Map();
+    
+    if (userRegisteredEvents?.length) {
+      userRegisteredEvents.forEach(regEvent => {
+        registrationMap.set(regEvent.eventId, {
+          isRegistered: true,
+          paymentStatus: regEvent.paymentStatus,
+          registrationDate: regEvent.registrationDate, // if available
+          // Add other registration details as needed
+        });
+      });
+    }
+
+    // Process events with registration status
+    const updatedEvents = allEventsData.map((event) => {
+      const registrationInfo = registrationMap.get(event._id);
+      
+      return {
+        ...event,
+        // Clean boolean for registration status
+        isRegistered: !!registrationInfo,
+        // Specific payment status (null if not registered)
+        paymentStatus: registrationInfo?.paymentStatus || null,
+        // Additional registration info if needed
+        registrationInfo: registrationInfo || null
+      };
+    });
+
+    console.log({
+      "Total Events": allEventsData.length,
+      "Registered Events": userRegisteredEvents?.length || 0,
+      "Updated Events Sample": updatedEvents.slice(0, 2) // Log first 2 for debugging
+    });
+
+    return updatedEvents;
+  },
+  // Only run when user exists and user registered events are loaded
+  enabled: !!user?.uniqueId && !fetchingUserRegisteredEvents,
+  onError: (error) => {
+    console.error('Failed to load events:', error);
+    // toast.error('Failed to load events');
+  },
+  staleTime: 5 * 60 * 1000, // 5 minutes
+  refetchOnWindowFocus: false,
+});
+
+// #:::::::::::::::  USER CHANGE EFFECT :::::::::::::::::#
+useEffect(() => {
+  if (user?.uniqueId) {
+    console.log("User changed, invalidating queries for:", user.uniqueId);
+    
+    // Invalidate queries with correct keys
+    queryClient.invalidateQueries({ 
+      queryKey: ['userRegisteredEvents', user.uniqueId] 
+    });
+    queryClient.invalidateQueries({ 
+      queryKey: ['allEventsWithStatus', user.uniqueId] 
+    });
+  }
+}, [user?.uniqueId, queryClient]); // Add queryClient to dependencies
+
+// #:::::::::::::::  HELPER FUNCTIONS :::::::::::::::::#
+
+// Helper function to check if user is registered for a specific event
+const isUserRegisteredForEvent = (eventId) => {
+  if (!allEventsWithStatus) return false;
+  
+  const event = allEventsWithStatus.find(event => event._id === eventId);
+  return event?.isRegistered || false;
+};
+
+// Helper function to get registration status for display
+const getRegistrationDisplayInfo = (event) => {
+  if (!event.isRegistered) {
+    return {
+      text: "Not Registered",
+      className: "text-red-500",
+      status: "not-registered"
+    };
+  }
+
+  // Handle different payment statuses
+  switch (event.paymentStatus) {
+    case "success":
+    case "completed":
+      return {
+        text: "Registered",
+        className: "text-green-500",
+        status: "registered-paid"
+      };
+    case "pending":
+      return {
+        text: "Registration Pending",
+        className: "text-yellow-500",
+        status: "registered-pending"
+      };
+    case "failed":
+      return {
+        text: "Payment Failed",
+        className: "text-red-500",
+        status: "registered-failed"
+      };
+    default:
+      return {
+        text: "Registered",
+        className: "text-blue-500",
+        status: "registered-unknown"
+      };
+  }
+};
+
+// #:::::::::::::::  UPDATED UI COMPONENT USAGE :::::::::::::::::#
+
+// In your JSX component:
+const EventCard = ({ event, index }) => {
+  const registrationInfo = getRegistrationDisplayInfo(event);
+  
+  return (
+    <div 
+      key={index} 
+      className="flex border justify-center space-y-2 flex-col rounded-[5px] px-[20px] py-[15px] bg-white border-[#e8e8e8]"
+    > 
+      {console.log("Event Registration Info:", {
+        eventId: event._id,
+        isRegistered: event.isRegistered,
+        paymentStatus: event.paymentStatus,
+        displayInfo: registrationInfo
+      })}
+      
+      <div className="flex justify-between items-center">
+        <h3 className="text-rubik text-[#1E293B] text-[17px] font-[500] flex items-center gap-2">
+          {event.eventTitle}
+        </h3>
+        
+        <p className="text-rubik text-[#1E293B] text-[13px] flex items-center">
+          <span className={registrationInfo.className}>
+            {registrationInfo.text}
+          </span>
+        </p>
+      </div>
+      
+      {/* Optional: Show additional registration details */}
+      {event.registrationInfo && (
+        <div className="text-sm text-gray-600">
+          <p>Status: {event.paymentStatus}</p>
+          {event.registrationInfo.registrationDate && (
+            <p>Registered: {new Date(event.registrationInfo.registrationDate).toLocaleDateString()}</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Usage in your main component:
+const EventsList = () => {
+  // ... your query hooks here ...
+  
+  if (fetchingAllEvents) {
+    return <div>Loading events...</div>;
+  }
+  
+  if (errorLoadingEvents) {
+    return <div>Error loading events</div>;
+  }
+  
+  return (
+    <div className="space-y-4">
+      {allEventsWithStatus?.map((event, index) => (
+        <EventCard key={event._id || index} event={event} index={index} />
+      ))}
+    </div>
+  );
+};
+
+// Export the data and helper functions
+export {
+  allEventsWithStatus,
+  fetchingAllEvents,
+  errorLoadingEvents,
+  userRegisteredEvents,
+  fetchingUserRegisteredEvents,
+  errorLoadingUserRegisteredEvents,
+  isUserRegisteredForEvent,
+  getRegistrationDisplayInfo
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// #:::::::::::::::  GET USER REGISTERED EVENTS :::::::::::::::::#
+const {
+  data: userRegisteredEvents,
+  isLoading: fetchingUserRegisteredEvents,
+  isError: errorLoadingUserRegisteredEvents
+} = useQuery({
+  queryKey: ['userRegisteredEvents', user?.uniqueId],
+  queryFn: async () => {
+    console.log('Fetching registered events for user:', user?.uniqueId);
+    const response = await axios.get(
+      `${backendUrl}/api/userRegisteredEvents/${user?.fullName}/${user?.uniqueId}`
+    );
+    return response.data.data;
+  },
+  enabled: !!user?.uniqueId, // More specific check
+  onError: (error) => {
+    console.error("Error fetching user registered events:", error);
+  },
+  staleTime: 5 * 60 * 1000, // 5 minutes instead of 1 second
+  refetchOnWindowFocus: false, // Reduce unnecessary refetches
+});
+
+// #:::::::::::::::  GET ALL EVENTS WITH REGISTRATION STATUS :::::::::::::::::#
+const {
+  data: allEventsWithStatus,
+  isLoading: fetchingAllEvents,
+  isError: errorLoadingEvents,
+} = useQuery({
+  queryKey: ['allEventsWithStatus', user?.uniqueId],
+  queryFn: async () => {
+    console.log('Fetching all events and processing registration status');
+    
+    // Fetch all events
+    const response = await axios.get(`${backendUrl}/api/admin/events`);
+    const allEventsData = response.data.data;
+
+    // Create a Map for O(1) lookup of registration data by eventId
+    const registrationMap = new Map();
+    
+    if (userRegisteredEvents?.length) {
+      userRegisteredEvents.forEach(regEvent => {
+        registrationMap.set(regEvent.eventId, {
+          isRegistered: true,
+          paymentStatus: regEvent.paymentStatus,
+          registrationDate: regEvent.registrationDate, // if available
+          // Add other registration details as needed
+        });
+      });
+    }
+
+    // Process events with registration status
+    const updatedEvents = allEventsData.map((event) => {
+      const registrationInfo = registrationMap.get(event._id);
+      
+      return {
+        ...event,
+        // Clean boolean for registration status
+        isRegistered: !!registrationInfo,
+        // Specific payment status (null if not registered)
+        paymentStatus: registrationInfo?.paymentStatus || null,
+        // Additional registration info if needed
+        registrationInfo: registrationInfo || null
+      };
+    });
+
+    console.log({
+      "Total Events": allEventsData.length,
+      "Registered Events": userRegisteredEvents?.length || 0,
+      "Updated Events Sample": updatedEvents.slice(0, 2) // Log first 2 for debugging
+    });
+
+    return updatedEvents;
+  },
+  // Only run when user exists and user registered events are loaded
+  enabled: !!user?.uniqueId && !fetchingUserRegisteredEvents,
+  onError: (error) => {
+    console.error('Failed to load events:', error);
+    // toast.error('Failed to load events');
+  },
+  staleTime: 5 * 60 * 1000, // 5 minutes
+  refetchOnWindowFocus: false,
+});
+
+// #:::::::::::::::  USER CHANGE EFFECT :::::::::::::::::#
+useEffect(() => {
+  if (user?.uniqueId) {
+    console.log("User changed, invalidating queries for:", user.uniqueId);
+    
+    // Invalidate queries with correct keys
+    queryClient.invalidateQueries({ 
+      queryKey: ['userRegisteredEvents', user.uniqueId] 
+    });
+    queryClient.invalidateQueries({ 
+      queryKey: ['allEventsWithStatus', user.uniqueId] 
+    });
+  }
+}, [user?.uniqueId, queryClient]); // Add queryClient to dependencies
+
+// #:::::::::::::::  HELPER FUNCTIONS :::::::::::::::::#
+
+// Helper function to check if user is registered for a specific event
+const isUserRegisteredForEvent = (eventId) => {
+  if (!allEventsWithStatus) return false;
+  
+  const event = allEventsWithStatus.find(event => event._id === eventId);
+  return event?.isRegistered || false;
+};
+
+// Helper function to get registration status for display
+const getRegistrationDisplayInfo = (event) => {
+  if (!event.isRegistered) {
+    return {
+      text: "Not Registered",
+      className: "text-red-500",
+      status: "not-registered"
+    };
+  }
+
+  // Handle different payment statuses
+  switch (event.paymentStatus) {
+    case "success":
+    case "completed":
+      return {
+        text: "Registered",
+        className: "text-green-500",
+        status: "registered-paid"
+      };
+    case "pending":
+      return {
+        text: "Registration Pending",
+        className: "text-yellow-500",
+        status: "registered-pending"
+      };
+    case "failed":
+      return {
+        text: "Payment Failed",
+        className: "text-red-500",
+        status: "registered-failed"
+      };
+    default:
+      return {
+        text: "Registered",
+        className: "text-blue-500",
+        status: "registered-unknown"
+      };
+  }
+};
+
+// Export the data and helper functions
+export {
+  allEventsWithStatus,
+  fetchingAllEvents,
+  errorLoadingEvents,
+  userRegisteredEvents,
+  fetchingUserRegisteredEvents,
+  errorLoadingUserRegisteredEvents,
+  isUserRegisteredForEvent,
+  getRegistrationDisplayInfo
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useState, useEffect } from "react";
 import Logo from "../../assets/main_logo.svg";
 import dlw from "../../assets/registrationpage/dlw.jpeg";

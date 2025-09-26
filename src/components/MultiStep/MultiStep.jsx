@@ -155,7 +155,7 @@ const MultiSteps = ({userData, eventDetails}) => {
      
   useEffect(()=>{
      setValues({
-     "uniqueId": userData?.uniqueId,
+    "uniqueID": userData?.uniqueId,
     "fullName": userData?.fullName,
     "email": userData?.email,
     "eventId": eventDetails._id,
@@ -181,10 +181,6 @@ const MultiSteps = ({userData, eventDetails}) => {
     {
       title: 'Proceed To Payment',
       component: <PayStack userDetails={userData} paymentOption={selectedOption} values={values} setValues={setValues} />,
-    },
-    {
-      title: 'Congratulations',
-      component: "Congratulations",
     },
   ];
 
