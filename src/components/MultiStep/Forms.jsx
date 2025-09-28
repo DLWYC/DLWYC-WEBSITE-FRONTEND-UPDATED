@@ -1,92 +1,61 @@
+import { useEffect, useState } from "react";
 import { Input } from "../../components/ui/input";
 import { useLocation, useNavigate } from "@tanstack/react-router";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
-const Form = ({ className, array, text, values, setValues }) => {
+const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const [paymentCode, setpaymentCode] = useState()
+  const [payersId, setpayersId] = useState()
 
-     console.log("Valuse", values)
 
-  const submitData = async (e) => {
-    e.preventDefault();
-    // console.log("herer")
-//     try {
-//       // Login Page
-//       if (pathname === "/") {
-//         const error = await LoginFormErrorHandler(values);
-//         if (error) {
-//           toast.error(error);
-//           return;
-//         }
-//         const data = await login({ values });
-//         console.log(data, "Login Message");
-//         if (data) {
-//           navigate({ to: "/userdashboard" });
-//         }
-//       }
+  const verifyCode = async (e) => {
+    // e.preventDefault();
+    try{
+    
+    if(!payersId || payersId == ''){
+      toast.error("Please Enter The Payer's ID")
+      return
+    }
+    else if(!paymentCode || paymentCode == ''){
+      toast.error("Please Enter The Payment Code")
+      return
+    }
+    
 
-//       // Create Complaints Page
-//       if (pathname === "/userdashboard/complaints") {
-//         const error = await ComplainFormErrorHandler(values);
-//         if (error) {
-//           toast.error(error);
-//           return;
-//         }
-//         const complainValues = {
-//           matricNumber: student.matricNumber,
-//           hostelName: student.hostelName,
-//           roomNumber: student.romNumber,
-//           ...values,
-//         };
-//         const data = await createComplaints(complainValues);
-//         if (data) {
-//           navigate({ to: "/userdashboard/complaints" });
-//         }
-//       }
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/payment/verify-code`, {
+        "payersId": payersId,
+        "archdeaconry": values?.archdeaconry,
+        "paymentCode": paymentCode
+      })
+      setPaymentCodeStatus(response?.data?.message)
+      toast.success(response?.data?.message)
+      console.log("REsponse", response?.data?.message)
+    }
 
-//       // Create Geofence page
-//       if (pathname === "/admin/geofences/create-geofence") {
-//         const error = await CreateGeofenceErrorHandler(values);
-//         if (error) {
-//           toast.error(error);
-//           return;
-//         }
-//         const geofenceValues = {
-//           geofenceCoordinate: geofenceCoordinate,
-//           ...values,
-//         };
-//         const data = await createGeofence(geofenceValues);
-//         if (data) {
-//           console.log(data);
-//           navigate({ to: "/admin" });
-//         }
-//       }
-     
-//       // Update Geofence page
-//       if (pathname === `{/admin/geofences/${student.hostelName}/${student.hosteNumber}`) {
-//         const error = await CreateGeofenceErrorHandler(values);
-//         if (error) {
-//           toast.error(error);
-//           return;
-//         }
-//         const geofenceValues = {
-//           geofenceCoordinate: geofenceCoordinate,
-//           ...values,
-//         };
-//         const data = await updateGeofence(geofenceValues);
-//         if (data) {
-//           console.log(data);
-//           navigate({ to: "/admin" });
-//         }
-//       }
-//     } catch (error) {
-//       console.log("This is the error:", error);
-//     }
+    catch(error){
+       const errorMessage = error?.response?.data?.error?.error || 
+                        'An error occurred during verification';
+      setPaymentCodeStatus(error?.response?.data?.error?.error)
+    toast.error(errorMessage);
+    }
+    
+      
   };
 
+  useEffect(()=>{
+      setValues({
+        ...values,
+        "modeOfPayment": "Code",
+        "paymentID": paymentCode,
+      })
+  }, [paymentCode])
+
+// 
   return (
-    <form className={`${className}  font-rubik `}>
+    <div className={`${className}  font-rubik `}>
       <div className=" grid gap-[15px]">
         {array.map((fields, index) => (
           <div className="w-full items-center flex flex-row gap-1 relative" key={index}>
@@ -111,36 +80,30 @@ const Form = ({ className, array, text, values, setValues }) => {
                 values[fields.name] || ""
               }
             />
-
             
           </div>
         ))}
-        {/* {pathname === "/userdashboard/complaints" ? (
-          <div className="grid relative mt-3">
-            <Label
-              htmlFor="description"
-              className={`transition-all peer-focus:-translate-y-[150%] absolute -top-6 text-[#060f3b] peer-focus:text-red"} "text-base"} `}
-            >
-              Description: 
-            </Label>
-            <textarea
-              name="description"
-              rows={9}
-              cols={9}
-              placeholder="Please Feel Free To Express Your Mind..."
-              className="border border-[#d3d9f4] p-1 outline-none resize-none "
-              onChange={(e) =>
-                setValues({ ...values, ['description']: e.target.value })
-              }
-            ></textarea>
-          </div>
-        ) : (
-          ""
-        )} */}
 
+
+        <div className="lg:flex grid items-center">
+
+        <div className="lg:flex  items-center">
+        <label htmlFor="payersId" className="mr-2 font-500 text-[14px] text-[#060f3b]">Payer UniqueID: <span className="text-red-500">*</span></label>
+        <Input type="text" name="payersId" id="payersId" className="border-0 border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpayersId(e.target.value)}/>
+        </div>
+
+<div className="lg:flex  items-center">
+        <label htmlFor="verifyCode" className="font-500 mr-2 text-[14px] text-[#060f3b]">Payment Code:</label>
+        <Input type="text" name="verifyCode" id="verifyCode" className="border-0 border border-gray-600 lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpaymentCode(e.target.value)}/>
+</div>
+          <button className="relative py-2 px-4 lg:mt-0 mt-3 cursor-pointer bg-primary-main text-white text-[13px]" onClick={verifyCode}>
+            Verify Code
+          </button>
+        </div>
+        
        
       </div>
-    </form>
+    </div>
   );
 };
 

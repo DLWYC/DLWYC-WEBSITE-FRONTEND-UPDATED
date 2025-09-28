@@ -1,4 +1,661 @@
+ const handleEdit = () => {
+    setIsEditing(true);
+    setEditData({...userData});
+    setProfilePreview(userData.profilePicture);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditData({...userData});
+    setProfilePreview(userData.profilePicture);
+  };
+
+  const handleSave = () => {
+    setUserData({...editData});
+    if (profilePreview) {
+      setUserData(prev => ({...prev, profilePicture: profilePreview}));
+    }
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (field, value) => {
+    setEditData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handlePasswordChange = (field, value) => {
+    setPasswordData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleProfilePictureChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDocumentUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && selectedDocumentType) {
+      const newDocument = {
+        id: Date.now(),
+        name: selectedDocumentType,
+        file: file,
+        uploadDate: new Date().toISOString().split('T')[0]
+      };
+      setDocuments(prev => [...prev, newDocument]);
+      setSelectedDocumentType('');
+      documentInputRef.current.value = '';
+    }
+  };
+
+  const handleDeleteDocument = (id) => {
+    setDocuments(prev => prev.filter(doc => doc.id !== id));
+  };
+
+  const ProfileField = ({ label, value, field, type = 'text', isTextarea = false }) => {
+    if (isEditing) {
+      return (
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-gray-700">{label}</label>
+          {isTextarea ? (
+            <textarea
+              value={editData[field] || ''}
+              onChange={(e) => handleInputChange(field, e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-gray-400 resize-none"
+                    style={{ '--tw-ring-color': '#091e54' }}
+              rows="3"
+            />
+          ) : (
+            <input
+              type={type}
+              value={editData[field] || ''}
+              onChange={(e) => handleInputChange(field, e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-gray-400"
+              style={{ '--tw-ring-color': '#091e54' }}
+            />
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-1">
+        <label className="block text-sm text-gray-500">{label}</label>
+        <p className="text-gray-900 font-medium">{value || 'Not provided'}</p>
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'profile':
+        return (
+          <div className="space-y-6">
+            {/* Email Verification Alert */}
+            {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                  <Mail className="w-3 h-3 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-blue-900 mb-1">Email Verification</h4>
+                  <p className="text-sm text-blue-700">Your email address has been verified successfully.</p>
+                </div>
+                <button className="text-blue-400 hover:text-blue-600">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div> */}
+
+            {/* Profile Overview */}
+            <div className="bg-white">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">Profile Overview</h2>
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center gap-2 px-4 py-2 text-white hover:bg-[#0a1f55] rounded-lg transition-colors duration-200"
+                  style={{ backgroundColor: '#091e54' }}
+                >
+                  <Edit3 className="w-4 h-4" />
+                  Edit Profile
+                </button>
+              </div>
+
+              <div className="flex items-start gap-6 mb-8">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
+                    {(profilePreview || userData.profilePicture) ? (
+                      <img
+                        src={profilePreview || userData.profilePicture}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <UserCircle className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                  {isEditing && (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute -bottom-1 -right-1 w-6 h-6 text-white rounded-full flex items-center justify-center hover:bg-[#0a1f55] transition-colors duration-200"
+                      style={{ backgroundColor: '#091e54' }}
+                    >
+                      <Camera className="w-3 h-3" />
+                    </button>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePictureChange}
+                    className="hidden"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{userData.fullName}</h3>
+                  <p className="text-gray-600 text-sm">{userData.occupation}</p>
+                  <div className="flex gap-4 mt-2">
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      41
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      124
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      200
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      356
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm text-gray-500 mb-1">Email</label>
+                    <p className="text-gray-900">{userData.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-500 mb-1">Location</label>
+                    <p className="text-gray-900">New York</p>
+                  </div>
+                </div>
+              </div>
+
+              {isEditing && (
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={handleCancel}
+                    className="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="px-4 py-2 text-white hover:bg-[#0a1f55] rounded-lg transition-colors duration-200"
+                    style={{ backgroundColor: '#091e54' }}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case 'personal':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
+              {!isEditing && (
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center gap-2 px-4 py-2 text-white hover:bg-[#0a1f55] rounded-lg transition-colors duration-200"
+                  style={{ backgroundColor: '#091e54' }}
+                >
+                  <Edit3 className="w-4 h-4" />
+                  Edit
+                </button>
+              )}
+            </div>
+
+            <div className="bg-white space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ProfileField
+                  label="Full Name"
+                  value={userData.fullName}
+                  field="fullName"
+                />
+                <ProfileField
+                  label="Email Address"
+                  value={userData.email}
+                  field="email"
+                  type="email"
+                />
+                <ProfileField
+                  label="Phone Number"
+                  value={userData.phone}
+                  field="phone"
+                  type="tel"
+                />
+                <ProfileField
+                  label="Date of Birth"
+                  value={userData.dateOfBirth}
+                  field="dateOfBirth"
+                  type="date"
+                />
+                <ProfileField
+                  label="Gender"
+                  value={userData.gender}
+                  field="gender"
+                />
+                <ProfileField
+                  label="Occupation"
+                  value={userData.occupation}
+                  field="occupation"
+                />
+              </div>
+              <ProfileField
+                label="Address"
+                value={userData.address}
+                field="address"
+              />
+              <ProfileField
+                label="Bio"
+                value={userData.bio}
+                field="bio"
+                isTextarea={true}
+              />
+
+              {isEditing && (
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={handleCancel}
+                    className="px-6 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="px-6 py-2 text-white hover:bg-[#0a1f55] rounded-lg transition-colors duration-200"
+                    style={{ backgroundColor: '#091e54' }}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case 'password':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-900">Change Password</h2>
+            
+            {/* Alert */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center mt-0.5">
+                  <Shield className="w-3 h-3 text-yellow-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-yellow-700">Your password will expire in 7 days. We strongly recommend changing it now.</p>
+                </div>
+                <button className="text-yellow-400 hover:text-yellow-600">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                  <input
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter current password"
+                  />
+                  <button className="text-sm hover:text-gray-700 mt-1"
+                    style={{ color: '#091e54' }}>
+                    Forgot your current password?
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter new password"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                  <input
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button className="px-6 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200">
+                  Cancel
+                </button>
+                                  <button className="px-6 py-2 text-white hover:bg-[#0a1f55] rounded-lg transition-colors duration-200"
+                    style={{ backgroundColor: '#091e54' }}>
+                  Change Password
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'documents':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-900">Documents</h2>
+
+            <div className="bg-white space-y-6">
+              {/* Upload Section */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Upload New Document</h3>
+                <div className="flex gap-3">
+                  <select
+                    value={selectedDocumentType}
+                    onChange={(e) => setSelectedDocumentType(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-gray-400"
+            style={{ '--tw-ring-color': '#091e54' }}
+                  >
+                    <option value="">Select document type</option>
+                    {documentTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => documentInputRef.current?.click()}
+                    disabled={!selectedDocumentType}
+                    className="px-4 py-2 text-white rounded-lg hover:bg-[#0a1f55] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-2"
+                    style={{ backgroundColor: !selectedDocumentType ? undefined : '#091e54' }}
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload
+                  </button>
+                </div>
+                <input
+                  ref={documentInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  onChange={handleDocumentUpload}
+                  className="hidden"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Supported formats: PDF, DOC, DOCX, JPG, PNG (Max 5MB)
+                </p>
+              </div>
+
+              {/* Documents List */}
+              <div className="space-y-3">
+                {documents.length === 0 ? (
+                  <div className="text-center py-12 border border-gray-200 rounded-lg">
+                    <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500">No documents uploaded</p>
+                  </div>
+                ) : (
+                  documents.map((doc) => (
+                    <div key={doc.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{doc.name}</p>
+                          <p className="text-sm text-gray-500">Uploaded: {doc.uploadDate}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg transition-colors"
+                          style={{ '&:hover': { backgroundColor: '#e8edf7', color: '#091e54' } }}>
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                          <Download className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteDocument(doc.id)}
+                          className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
+        // #### THis Is the sideNav
+      default:
+        return (
+          <div className="space-y-6 border border-red-500">
+            <h2 className="text-xl font-semibold text-gray-900">{sidebarItems.find(item => item.id === activeTab)?.label}</h2>
+            <div className="bg-white p-8 text-center">
+              <p className="text-gray-500">This section is coming soon.</p>
+            </div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 font-rubik">
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-gray-200 min-h-screen">
+          <div className="p-6 border-b border-gray-200">
+            <h1 className="text-xl font-semibold text-gray-900">Account Profile</h1>
+          </div>
+
+          {/* Profile Summary */}
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 mb-3">
+                {userData.profilePicture ? (
+                  <img
+                    src={userData.profilePicture}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <UserCircle className="w-10 h-10 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <h3 className="font-medium text-gray-900">{userData.fullName}</h3>
+              <div className="flex gap-2 mt-2">
+                <span className="w-6 h-6 bg-red-100 text-red-600 rounded text-xs flex items-center justify-center">41</span>
+                <span className="w-6 h-6 bg-orange-100 text-orange-600 rounded text-xs flex items-center justify-center">124</span>
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center">200</span>
+                <span className="w-6 h-6 bg-green-100 text-green-600 rounded text-xs flex items-center justify-center">356</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="p-4 border border-red-500">
+            <ul className="space-y-2 border ">
+              {sidebarItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors duration-200 ${
+                        activeTab === item.id
+                          ? 'text-white'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                      style={activeTab === item.id ? { backgroundColor: '#091e54' } : {}}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="text-sm">{item.label}</span>
+                      <ChevronRight className="w-4 h-4 ml-auto" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Personal Information Preview */}
+          <div className="p-4 border-t border-gray-200">
+            <h4 className="text-sm font-medium text-gray-900 mb-3">Personal Information</h4>
+            <div className="space-y-2 text-xs text-gray-600">
+              <div className="flex justify-between">
+                <span>Email</span>
+                <span className="text-right">{userData.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Phone</span>
+                <span className="text-right">{userData.phone}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Location</span>
+                <span className="text-right">New York</span>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-8">
+          {renderContent()}
+        </div>
+      </div>
+    </div>
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //   import { PaystackButton } from 'react-paystack';
+
+
+
+
+
+
+
+
+
+
 // import Male from "/male.png"
 // import Female from "/female.png"
 // import { Wallet } from 'lucide-react';

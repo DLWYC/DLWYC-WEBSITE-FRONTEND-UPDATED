@@ -2,7 +2,7 @@
 const formStep = [
           {
                fieldName: "Unique ID",
-               name: 'uniqueId',
+               name: 'uniqueID',
                type: 'text',
                readOnly: true
           },

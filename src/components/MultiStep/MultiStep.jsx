@@ -4,7 +4,7 @@ import PaymentSelection from './paymentSelection';
 import Form from './Forms';
 import { formStep } from '@/data/Forms';
 import PayStack from './PayStack';
-
+import  Confirmation from './Confirmation'
 
 
 // Custom MultiStep component that mimics react-multistep
@@ -130,27 +130,13 @@ const MultiStep = ({
 //   </div>
 // );
 
-// const StepThree = () => (
-//   <div className="step-content p-6 bg-white rounded-lg shadow-sm text-center">
-//     <div className="mb-6">
-//       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-//         <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-//         </svg>
-//       </div>
-//       <h2 className="text-2xl font-bold text-gray-800 mb-2">Registration Complete!</h2>
-//       <p className="text-gray-600">Thank you for registering!</p>
-//     </div>
-//     <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
-//       <p className="text-green-800">A confirmation email will be sent to you shortly.</p>
-//     </div>
-//   </div>
-// );
+
 
 // Main component
 const MultiSteps = ({userData, eventDetails}) => {
      const [selectedOption, setSelectedOption] = useState('single');
   const [values, setValues] = useState({});
+  const [paymentCodeStatus, setPaymentCodeStatus] = useState()
 //   console.log("sdsdfdsf", eventDetails)
      
   useEffect(()=>{
@@ -176,17 +162,35 @@ const MultiSteps = ({userData, eventDetails}) => {
     },
     {
       title: 'Confirm Details',
-      component: <Form array={formStep} values={values} setValues={setValues} />,
+      component: <Form array={formStep} values={values} setValues={setValues} setPaymentCodeStatus={setPaymentCodeStatus} />,
     },
-    {
-      title: 'Proceed To Payment',
-      component: <PayStack userDetails={userData} paymentOption={selectedOption} values={values} setValues={setValues} />,
-    },
+    // {paymentCodeStatus == 'Valid Code' ? 
+    //   {
+    //     title: 'Proceed To Payment',
+    //     component: <PayStack userDetails={userData} paymentOption={selectedOption} values={values} setValues={setValues} />,
+    //   }
+    //   : 
+    //   ""
+    // }
+    ...(paymentCodeStatus == 'Invalid Code' || paymentCodeStatus == "" ? 
+        [{
+      title: 'Procees To Payment',
+      component: <PayStack 
+        userDetails={userData} 
+        paymentOption={selectedOption} 
+        values={values} 
+        setValues={setValues} 
+      />,
+    }]  : 
+      paymentCodeStatus == "Valid Code" ? [{
+      title: 'Confirm Payment',
+      component: <Confirmation values={values} modeOfPayment={"Code"} />,
+    }] : "" )
   ];
 
   return (
        <div className="p-6 bg-[#f4f7fa] rounded-xl  w-full mx-auto">
-       {console.log("All Gathered: ", values)}
+       {console.log("All Gathered: ", paymentCodeStatus)}
       <MultiStep
         steps={steps}
         stepCustomStyle={{

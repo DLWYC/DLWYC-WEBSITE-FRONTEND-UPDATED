@@ -38,7 +38,7 @@ function PayStack({ userDetails, values, setValues, paymentOption }) {
   // Verify payment with backend (backend should call Paystack)
   const verifyPaymentWithBackend = useCallback(async (reference) => {
     try {
-      const response = await axios.post(`${backendURL}/api/verify-payment`, {
+      const response = await axios.post(`${backendURL}/api/payment/verify-payment`, {
         reference,
         userId: userDetails?.uniqueId
       });
