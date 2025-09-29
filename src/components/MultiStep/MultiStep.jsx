@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PaymentSelection from './paymentSelection';
 import Form from './Forms';
@@ -108,7 +108,7 @@ const MultiStep = ({
               opacity: currentStep === steps.length - 1 ? 0.5 : 1,
               cursor: currentStep === steps.length - 1 ? 'not-allowed' : 'pointer'
             }}
-            className="flex items-center transition-all duration-200 hover:shadow-md disabled:hover:shadow-none"
+            className="flex items-center transition-all duration-200 hover:shadow-md disabled:hover:shadow-none "
           >
             {nextButton.title}
             <ChevronRight className="w-4 h-4 ml-1" />
@@ -121,23 +121,11 @@ const MultiStep = ({
 
 
 
-
-
-
-// const StepTwo = ({ heading }) => (
-//   <div className="step-content  p-6 ">
-//      <Form array={formStep}  />
-//   </div>
-// );
-
-
-
 // Main component
 const MultiSteps = ({userData, eventDetails}) => {
      const [selectedOption, setSelectedOption] = useState('single');
   const [values, setValues] = useState({});
   const [paymentCodeStatus, setPaymentCodeStatus] = useState()
-//   console.log("sdsdfdsf", eventDetails)
      
   useEffect(()=>{
      setValues({
@@ -151,42 +139,65 @@ const MultiSteps = ({userData, eventDetails}) => {
     "archdeaconry": userData?.archdeaconry
      })
   }, [userData, eventDetails])
-     
-  const steps = [
+
+
+  const steps = useMemo(() => {
+  const baseSteps = [
     {
       title: 'Payment Type',
-      component:   <PaymentSelection 
-     selectedOption={selectedOption}
-     setSelectedOption={setSelectedOption}
-  />,
+      component: <PaymentSelection 
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+      />,
     },
     {
       title: 'Confirm Details',
-      component: <Form array={formStep} values={values} setValues={setValues} setPaymentCodeStatus={setPaymentCodeStatus} />,
+      component: <Form 
+        array={formStep} 
+        values={values} 
+        setValues={setValues} 
+        setPaymentCodeStatus={setPaymentCodeStatus} 
+        selectedOption={selectedOption}
+      />,
     },
-    // {paymentCodeStatus == 'Valid Code' ? 
-    //   {
-    //     title: 'Proceed To Payment',
-    //     component: <PayStack userDetails={userData} paymentOption={selectedOption} values={values} setValues={setValues} />,
-    //   }
-    //   : 
-    //   ""
-    // }
-    ...(paymentCodeStatus == 'Invalid Code' || paymentCodeStatus == "" ? 
-        [{
-      title: 'Procees To Payment',
+  ];
+
+  // Logic for showing steps based on payment mode and code status
+  if (selectedOption === 'single') {
+    // For single payment mode
+    if (paymentCodeStatus === "Valid Code") {
+      // Show Confirm Payment step when code is valid
+      baseSteps.push({
+        title: 'Confirm Payment',
+        component: <Confirmation values={values} modeOfPayment={"Code"}    />,
+      });
+    } else {
+      // Show Proceed To Payment step by default or when code is invalid
+      // This covers: empty string, undefined, "Invalid Code", or any other status
+      baseSteps.push({
+        title: 'Proceed To Payment',
+        component: <PayStack 
+          userDetails={userData} 
+          paymentOption={selectedOption} 
+          values={values} 
+          setValues={setValues} 
+        />,
+      });
+    }
+  } else if (selectedOption === 'multiple') { // Changed 'Multiple' to 'multiple' for consistency
+    baseSteps.push({
+      title: 'Proceed To Payment',
       component: <PayStack 
         userDetails={userData} 
         paymentOption={selectedOption} 
         values={values} 
         setValues={setValues} 
       />,
-    }]  : 
-      paymentCodeStatus == "Valid Code" ? [{
-      title: 'Confirm Payment',
-      component: <Confirmation values={values} modeOfPayment={"Code"} />,
-    }] : "" )
-  ];
+    });
+  }
+  
+  return baseSteps;
+}, [selectedOption, paymentCodeStatus, userData, values, formStep]);
 
   return (
        <div className="p-6 bg-[#f4f7fa] rounded-xl  w-full mx-auto">

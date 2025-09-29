@@ -1,12 +1,37 @@
+import { useNavigate } from "@tanstack/react-router";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Confirmation = ({values}) => {
+    const navigate = useNavigate();
+  
+
      console.log("ONFIRMATION PAGE:", values)
+      const updateValues = {
+                "payersId": values?.payersId, 
+                "paymentCode": values?.paymentID, 
+                "archdeaconry": values?.archdeaconry,
+                "eventTitle": values?.eventTitle,
+                "userName": values?.fullName, 
+                "userId": values?.uniqueID, 
+                "userEmail": values?.email
+            }
 
      const confirmRegistration = async (e) =>{
           e.preventDefault()
-          const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/userRegisteredEvents`, values)
-          console.table(response)
+          // console.log("Update Values", updateValues)
+          // const UpdateCodeStatus = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/payment/update-code-status`, updateValues)
+          //   console.log("UpdateCodeStatus", UpdateCodeStatus)
+            
+          //   const registrationStatus = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/userRegisteredEvents`, values)
+          //   console.log("Sdaasdasd", registrationStatus)
+            
+          //   if (registrationStatus){
+          //     toast.success("Registration Successful") 
+          //       navigate({to: '/userDashboard'})
+          // }
+          // toast.warning("Issh")
+          // console.log("sdfsdf")
      }
 
      return(

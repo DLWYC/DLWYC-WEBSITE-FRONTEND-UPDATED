@@ -5,14 +5,13 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 
-const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus }) => {
+const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus, selectedOption }) => {
   const navigate = useNavigate();
   const [paymentCode, setpaymentCode] = useState()
   const [payersId, setpayersId] = useState()
-
-
-  const verifyCode = async (e) => {
-    // e.preventDefault();
+  const [numberOfPayment, setNumberOfPayment] = useState(0)
+  console.log("Forms", typeof numberOfPayment)
+  const verifyCode = async () => {
     try{
     
     if(!payersId || payersId == ''){
@@ -28,7 +27,8 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus 
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/payment/verify-code`, {
         "payersId": payersId,
         "archdeaconry": values?.archdeaconry,
-        "paymentCode": paymentCode
+        "paymentCode": paymentCode,
+        "eventTitle": values?.eventTitle
       })
       setPaymentCodeStatus(response?.data?.message)
       toast.success(response?.data?.message)
@@ -46,12 +46,20 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus 
   };
 
   useEffect(()=>{
+
+    selectedOption == 'single' ?
       setValues({
         ...values,
         "modeOfPayment": "Code",
         "paymentID": paymentCode,
+        "payersId": payersId
       })
-  }, [paymentCode])
+      : 
+      setValues({
+        ...values,
+        "numberOfPayment": numberOfPayment,
+      })
+  }, [paymentCode, numberOfPayment])
 
 // 
   return (
@@ -86,8 +94,17 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus 
 
 
         <div className="lg:flex grid items-center">
+          {selectedOption == 'multiple' ? (
+            <div className="">
+               <div className="lg:flex  items-center">
+        <label htmlFor="numberOfPayment" className="mr-2 font-500 text-[14px] text-[#060f3b]">Select Number: <span className="text-red-500">*</span></label>
+        <Input type="number" name="numberOfPayment" id="numberOfPayment" placeholder="0" className="border-0 border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setNumberOfPayment(Number(e.target.value))}/>
+        </div>
+            </div>
+          ) : (
+            <div className="flex">
 
-        <div className="lg:flex  items-center">
+            <div className="lg:flex  items-center">
         <label htmlFor="payersId" className="mr-2 font-500 text-[14px] text-[#060f3b]">Payer UniqueID: <span className="text-red-500">*</span></label>
         <Input type="text" name="payersId" id="payersId" className="border-0 border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpayersId(e.target.value)}/>
         </div>
@@ -99,6 +116,8 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus 
           <button className="relative py-2 px-4 lg:mt-0 mt-3 cursor-pointer bg-primary-main text-white text-[13px]" onClick={verifyCode}>
             Verify Code
           </button>
+            </div>
+          )} 
         </div>
         
        

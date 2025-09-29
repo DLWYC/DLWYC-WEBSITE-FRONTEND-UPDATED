@@ -12,10 +12,6 @@ import { useNavigate, } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 
 // Constants
-const PAYMENT_AMOUNTS = {
-  single: 2000,
-  bulk: 400000
-};
 
 const PAYMENT_STATUS = {
   PENDING: 'pending',
@@ -24,16 +20,27 @@ const PAYMENT_STATUS = {
   ABANDONED: 'abandoned'
 };
 
-function PayStack({ userDetails, values, setValues, paymentOption }) {
+function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayment }) {
+  const numberOfPaymentSess = values?.numberOfPayment
+  
+  const PAYMENT_AMOUNTS = {
+    single: 2000,
+    multiple: 2000 * (numberOfPaymentSess || 1)
+  };
   const [paymentStatus, setPaymentStatus] = useState(PAYMENT_STATUS.PENDING);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
   const backendURL = import.meta.env.VITE_BACKEND_URL;
   const queryClient = useQueryClient()
 
+
+
+
+
   // Generate unique reference for this payment attempt
   const paymentReference = `TXN_${userDetails?.uniqueId?.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
-  const amount = PAYMENT_AMOUNTS[paymentOption] || PAYMENT_AMOUNTS.single;
+  const amount = paymentOption == 'single' ? PAYMENT_AMOUNTS.single : PAYMENT_AMOUNTS.multiple;
+  console.log("Values", paymentOption, 'numberOfPayemnt', numberOfPaymentSess, "Amounr", amount, PAYMENT_AMOUNTS.single, PAYMENT_AMOUNTS.multiple)
 
   // Verify payment with backend (backend should call Paystack)
   const verifyPaymentWithBackend = useCallback(async (reference) => {
@@ -50,10 +57,12 @@ function PayStack({ userDetails, values, setValues, paymentOption }) {
     }
   }, [backendURL, userDetails?.uniqueId]);
 
+
+
   // Register user event after successful payment
   const registerUserEvent = useCallback(async (paymentData) => {
      console.log("Data T Be Submittted", paymentData)
-    const registrationData = {
+     const registrationData = {
       ...values,
       ...paymentData,
       paymentOption,
@@ -62,12 +71,36 @@ function PayStack({ userDetails, values, setValues, paymentOption }) {
 
     try {
       const response = await axios.post(`${backendURL}/api/userRegisteredEvents`, registrationData);
+      // Generate Codes Upon Registration
+      if(paymentOption == 'multiple'){
+        // ##### Generate Code First
+        const codesGenerated = await axios.post(`${backendURL}/api/payment/generate-code`, {
+          "numberOfPersons": numberOfPaymentSess
+        });
+        // ##Save THe Code
+        const saveCode = await axios.post(`${backendURL}/api/payment/save-codes`, {
+          "payerId": userDetails?.uniqueId,
+          "payerArchdeaconry": userDetails?.archdeaconry,
+          "eventId": values?.eventId,
+          "eventTitle": values?.eventTitle,
+          "codes": codesGenerated?.data?.data
+        });
+
+        console.log("This arer ths Codes", codesGenerated, "Saved Code", saveCode)
+      }
+      else{
+        console.log("No Code Genereated")
+      }
+
       return response.data;
     } catch (error) {
       console.error('Event registration failed:', error);
       throw new Error(error.response?.data?.errors?.error || 'Registration failed');
     }
   }, [values, paymentOption, userDetails?.uniqueId, backendURL]);
+
+
+
 
 
 
@@ -95,7 +128,7 @@ function PayStack({ userDetails, values, setValues, paymentOption }) {
         modeOfPayment: verificationResult.channel,
         paymentTime: verificationResult.paid_at,
         paymentID: verificationResult.id,
-        amount: verificationResult.amount / 100 // Convert from kobo
+        amountOfPeople: paymentOption == 'multiple' ? numberOfPaymentSess : "1"
       });
 
       console.log(queryClient.getQueriesData({}))
@@ -220,7 +253,7 @@ function PayStack({ userDetails, values, setValues, paymentOption }) {
             Reference ID: <span className="ml-3 font-[500] text-reddish">{paymentReference}</span>
           </p>
           <p className="text-[14px]">
-            Amount: <span className="ml-3 font-[500] text-reddish">₦{amount.toLocaleString()}</span>
+            Amount: <span className="ml-3 font-[500] text-reddish">₦{amount}</span>
           </p>
           <p className="text-[14px]">
             Payment Type: <span className="ml-3 font-[500] text-reddish capitalize">{paymentOption}</span>
