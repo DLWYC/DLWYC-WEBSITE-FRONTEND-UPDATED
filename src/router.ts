@@ -1,16 +1,10 @@
 import { createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
-import type { useAuth } from '@/lib/AuthContext'
-
-// Define the router context type
-type RouterContext = {
-  auth: ReturnType<typeof useAuth>
-}
 
 // Create the router instance with all configurations
 export const router = createRouter({
   routeTree,
-  context: undefined!, // We'll provide this at render time
+  context: undefined!,
   defaultPreload: 'intent',
   scrollRestoration: true,
   defaultStructuralSharing: true,
