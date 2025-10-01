@@ -5,13 +5,12 @@ import { toast } from "react-toastify";
 const AuthContext = createContext();
 
 export function AuthProvider({children}){
-     const backendUrl = 'https://dlwyc-api.onrender.com'
      const queryClient = useQueryClient()
 
      // #:::::::::::::::  GET USER LOGIN FUNCTION :::::::::::::::::#
      const login = useMutation({
     mutationFn: async({values})=>{
-       const res = await axios.post(`${backendUrl}/api/userLogin`, values);
+       const res = await axios.post(`https://dlwyc-api.onrender.com/api/userLogin`, values);
        localStorage.setItem("token", res.data.token);
       return res
     }, onSuccess: (res) =>{
