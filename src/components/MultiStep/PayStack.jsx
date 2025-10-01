@@ -24,8 +24,8 @@ function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayme
   const numberOfPaymentSess = values?.numberOfPayment
   
   const PAYMENT_AMOUNTS = {
-    single: 2000,
-    multiple: 2000 * (numberOfPaymentSess || 1)
+    single: 7500,
+    multiple: 7500 * (numberOfPaymentSess || 1)
   };
   const [paymentStatus, setPaymentStatus] = useState(PAYMENT_STATUS.PENDING);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -40,7 +40,7 @@ function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayme
   // Generate unique reference for this payment attempt
   const paymentReference = `TXN_${userDetails?.uniqueId?.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
   const amount = paymentOption == 'single' ? PAYMENT_AMOUNTS.single : PAYMENT_AMOUNTS.multiple;
-  console.log("Values", paymentOption, 'numberOfPayemnt', numberOfPaymentSess, "Amounr", amount, PAYMENT_AMOUNTS.single, PAYMENT_AMOUNTS.multiple)
+  console.log("Values", values, 'numberOfPayemnt', numberOfPaymentSess, "Amounr", amount, PAYMENT_AMOUNTS.single, PAYMENT_AMOUNTS.multiple)
 
   // Verify payment with backend (backend should call Paystack)
   const verifyPaymentWithBackend = useCallback(async (reference) => {
@@ -268,7 +268,7 @@ function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayme
         />
         
         {paymentStatus === PAYMENT_STATUS.FAILED && (
-          <p className="text-red-500 text-sm text-center">
+          <p className="text-red-500 text-[15px] text-center">
             Payment failed. Please try again or contact support.
           </p>
         )}

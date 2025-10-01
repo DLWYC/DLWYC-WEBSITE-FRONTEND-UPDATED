@@ -46,7 +46,7 @@ const UserDashboardTopNav = () => {
                <div className="flex font-inter">
                     <DropdownMenu>
                     <DropdownMenuTrigger className="cursor-pointer">
-                                        <UserProfileImage imageWidth={35} profilePicture={userData?.profilePicture} />
+                                        <UserProfileImage imageWidth={35} />
 
                     </DropdownMenuTrigger>
 
@@ -74,7 +74,7 @@ const UserDashboardTopNav = () => {
                     ))}
 
                     <DropdownMenuSeparator />
-        <div className="text-red-500 gap-3 cursor-pointer px-2 py-1.5 text-sm">
+        <div className="text-red-500 gap-3 cursor-pointer px-2 py-1.5 text-[15px]">
         <p className="flex items-center gap-3" onClick={handleLogOut}>
 
         <Power className="text-red-500 size-[16px]"/>

@@ -28,7 +28,7 @@ function UserDashboard() {
   const navigate = useNavigate()
   
     useEffect(() => {
-    if (errorLoadingUserData && errorLoadingUserData.message === 'INVALID_TOKEN') {
+    if (errorLoadingUserData && errorLoadingUserData.message === 'INVALID_TOKEN' ) {
       toast.warning("Session Expired, Login Again");
       localStorage.removeItem("token")
       navigate({ to: '/userlogin' });

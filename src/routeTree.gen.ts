@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsersignupRouteImport } from './routes/usersignup'
 import { Route as UserloginRouteImport } from './routes/userlogin'
 import { Route as UserdashboardRouteImport } from './routes/userdashboard'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -17,12 +18,18 @@ import { Route as UserdashboardIndexRouteImport } from './routes/userdashboard/i
 import { Route as EventsIndexRouteImport } from './routes/events/index'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as UserdashboardProfileRouteImport } from './routes/userdashboard/profile'
+import { Route as UserdashboardPaymentsRouteImport } from './routes/userdashboard/payments'
 import { Route as UserdashboardEventhistoryRouteImport } from './routes/userdashboard/eventhistory'
 import { Route as EventsIdRouteImport } from './routes/events/$id'
 import { Route as AboutChaplainsRouteImport } from './routes/about/chaplains'
 import { Route as AboutChairmansRouteImport } from './routes/about/chairmans'
 import { Route as UserdashboardEventIdRouteImport } from './routes/userdashboard/event/$id'
 
+const UsersignupRoute = UsersignupRouteImport.update({
+  id: '/usersignup',
+  path: '/usersignup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UserloginRoute = UserloginRouteImport.update({
   id: '/userlogin',
   path: '/userlogin',
@@ -63,6 +70,11 @@ const UserdashboardProfileRoute = UserdashboardProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => UserdashboardRoute,
 } as any)
+const UserdashboardPaymentsRoute = UserdashboardPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => UserdashboardRoute,
+} as any)
 const UserdashboardEventhistoryRoute =
   UserdashboardEventhistoryRouteImport.update({
     id: '/eventhistory',
@@ -95,10 +107,12 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/userdashboard': typeof UserdashboardRouteWithChildren
   '/userlogin': typeof UserloginRoute
+  '/usersignup': typeof UsersignupRoute
   '/about/chairmans': typeof AboutChairmansRoute
   '/about/chaplains': typeof AboutChaplainsRoute
   '/events/$id': typeof EventsIdRoute
   '/userdashboard/eventhistory': typeof UserdashboardEventhistoryRoute
+  '/userdashboard/payments': typeof UserdashboardPaymentsRoute
   '/userdashboard/profile': typeof UserdashboardProfileRoute
   '/about': typeof AboutIndexRoute
   '/events': typeof EventsIndexRoute
@@ -109,10 +123,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
   '/userlogin': typeof UserloginRoute
+  '/usersignup': typeof UsersignupRoute
   '/about/chairmans': typeof AboutChairmansRoute
   '/about/chaplains': typeof AboutChaplainsRoute
   '/events/$id': typeof EventsIdRoute
   '/userdashboard/eventhistory': typeof UserdashboardEventhistoryRoute
+  '/userdashboard/payments': typeof UserdashboardPaymentsRoute
   '/userdashboard/profile': typeof UserdashboardProfileRoute
   '/about': typeof AboutIndexRoute
   '/events': typeof EventsIndexRoute
@@ -125,10 +141,12 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/userdashboard': typeof UserdashboardRouteWithChildren
   '/userlogin': typeof UserloginRoute
+  '/usersignup': typeof UsersignupRoute
   '/about/chairmans': typeof AboutChairmansRoute
   '/about/chaplains': typeof AboutChaplainsRoute
   '/events/$id': typeof EventsIdRoute
   '/userdashboard/eventhistory': typeof UserdashboardEventhistoryRoute
+  '/userdashboard/payments': typeof UserdashboardPaymentsRoute
   '/userdashboard/profile': typeof UserdashboardProfileRoute
   '/about/': typeof AboutIndexRoute
   '/events/': typeof EventsIndexRoute
@@ -142,10 +160,12 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/userdashboard'
     | '/userlogin'
+    | '/usersignup'
     | '/about/chairmans'
     | '/about/chaplains'
     | '/events/$id'
     | '/userdashboard/eventhistory'
+    | '/userdashboard/payments'
     | '/userdashboard/profile'
     | '/about'
     | '/events'
@@ -156,10 +176,12 @@ export interface FileRouteTypes {
     | '/'
     | '/gallery'
     | '/userlogin'
+    | '/usersignup'
     | '/about/chairmans'
     | '/about/chaplains'
     | '/events/$id'
     | '/userdashboard/eventhistory'
+    | '/userdashboard/payments'
     | '/userdashboard/profile'
     | '/about'
     | '/events'
@@ -171,10 +193,12 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/userdashboard'
     | '/userlogin'
+    | '/usersignup'
     | '/about/chairmans'
     | '/about/chaplains'
     | '/events/$id'
     | '/userdashboard/eventhistory'
+    | '/userdashboard/payments'
     | '/userdashboard/profile'
     | '/about/'
     | '/events/'
@@ -187,6 +211,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   UserdashboardRoute: typeof UserdashboardRouteWithChildren
   UserloginRoute: typeof UserloginRoute
+  UsersignupRoute: typeof UsersignupRoute
   AboutChairmansRoute: typeof AboutChairmansRoute
   AboutChaplainsRoute: typeof AboutChaplainsRoute
   EventsIdRoute: typeof EventsIdRoute
@@ -196,6 +221,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/usersignup': {
+      id: '/usersignup'
+      path: '/usersignup'
+      fullPath: '/usersignup'
+      preLoaderRoute: typeof UsersignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/userlogin': {
       id: '/userlogin'
       path: '/userlogin'
@@ -252,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserdashboardProfileRouteImport
       parentRoute: typeof UserdashboardRoute
     }
+    '/userdashboard/payments': {
+      id: '/userdashboard/payments'
+      path: '/payments'
+      fullPath: '/userdashboard/payments'
+      preLoaderRoute: typeof UserdashboardPaymentsRouteImport
+      parentRoute: typeof UserdashboardRoute
+    }
     '/userdashboard/eventhistory': {
       id: '/userdashboard/eventhistory'
       path: '/eventhistory'
@@ -292,6 +331,7 @@ declare module '@tanstack/react-router' {
 
 interface UserdashboardRouteChildren {
   UserdashboardEventhistoryRoute: typeof UserdashboardEventhistoryRoute
+  UserdashboardPaymentsRoute: typeof UserdashboardPaymentsRoute
   UserdashboardProfileRoute: typeof UserdashboardProfileRoute
   UserdashboardIndexRoute: typeof UserdashboardIndexRoute
   UserdashboardEventIdRoute: typeof UserdashboardEventIdRoute
@@ -299,6 +339,7 @@ interface UserdashboardRouteChildren {
 
 const UserdashboardRouteChildren: UserdashboardRouteChildren = {
   UserdashboardEventhistoryRoute: UserdashboardEventhistoryRoute,
+  UserdashboardPaymentsRoute: UserdashboardPaymentsRoute,
   UserdashboardProfileRoute: UserdashboardProfileRoute,
   UserdashboardIndexRoute: UserdashboardIndexRoute,
   UserdashboardEventIdRoute: UserdashboardEventIdRoute,
@@ -313,6 +354,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   UserdashboardRoute: UserdashboardRouteWithChildren,
   UserloginRoute: UserloginRoute,
+  UsersignupRoute: UsersignupRoute,
   AboutChairmansRoute: AboutChairmansRoute,
   AboutChaplainsRoute: AboutChaplainsRoute,
   EventsIdRoute: EventsIdRoute,

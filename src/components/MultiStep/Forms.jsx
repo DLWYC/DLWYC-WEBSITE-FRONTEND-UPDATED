@@ -10,7 +10,7 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus,
   const [paymentCode, setpaymentCode] = useState()
   const [payersId, setpayersId] = useState()
   const [numberOfPayment, setNumberOfPayment] = useState(0)
-  console.log("Forms", typeof numberOfPayment)
+
   const verifyCode = async () => {
     try{
     
@@ -59,8 +59,11 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus,
         ...values,
         "numberOfPayment": numberOfPayment,
       })
-  }, [paymentCode, numberOfPayment])
 
+      
+    }, [paymentCode, numberOfPayment, payersId])
+    
+    console.log("Forms Values", values, "payers Id", payersId)
 // 
   return (
     <div className={`${className}  font-rubik `}>

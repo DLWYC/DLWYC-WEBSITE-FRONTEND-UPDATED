@@ -179,7 +179,50 @@ function UserProfile(){
             </div>
           </div>
             </div>
-          )
+          );
+
+          case 'password':
+        return (
+          <div className="space-y-6 font-rubik">
+            <h2 className="text-xl font-semibold text-gray-900">Change Password</h2>
+
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[15px] font-medium text-gray-700 mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter new password"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[15px] font-medium text-gray-700 mb-2">Confirm Password</label>
+                  <input
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button className="px-6 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200">
+                  Cancel
+                </button>
+                                  <button className="px-6 py-2 text-white hover:bg-[#0a1f55] rounded-lg transition-colors duration-200"
+                    style={{ backgroundColor: '#091e54' }}>
+                  Change Password
+                </button>
+              </div>
+            </div>
+          </div>
+        );
       }
   }
 
@@ -228,7 +271,7 @@ function UserProfile(){
                       style={activeTab === item.id ? { backgroundColor: '#091e54' } : {}}
                     >
                       <Icon className="w-4 h-4" />
-                      <span className="text-sm">{item.label}</span>
+                      <span className="text-[15px]">{item.label}</span>
                       <ChevronRight className="w-4 h-4 ml-auto" />
                     </button>
                   </li>

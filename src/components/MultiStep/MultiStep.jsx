@@ -43,7 +43,7 @@ const MultiStep = ({
           {steps.map((step, index) => (
             <div key={index} className="flex items-center">
               <div className={`flex flex-col items-center ${direction === 'column' ? 'mb-4' : ''}`}>
-                <div className={`w-[35px] h-[35px] rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                <div className={`w-[35px] h-[35px] rounded-full flex items-center justify-center text-[15px] font-medium transition-all duration-300 ${
                   index <= currentStep 
                     ? 'bg-primary-main text-white shadow-lg' 
                     : 'bg-gray-200 text-gray-600'
@@ -96,7 +96,7 @@ const MultiStep = ({
             {prevButton.title}
           </button>
           
-          <div className="text-sm text-gray-500">
+          <div className="text-[15px] text-gray-500">
             Step {currentStep + 1} of {steps.length}
           </div>
           

@@ -37,7 +37,7 @@ const AppSidebar = () => {
 
 
   return (
-    <Sidebar className="bg-[white] font-rubik z-[600]">
+    <Sidebar className="bg-[white]  z-[600]">
       <SidebarHeader className="bg-white" >
           <img src="/main_logo.svg" alt="" />
       </SidebarHeader>

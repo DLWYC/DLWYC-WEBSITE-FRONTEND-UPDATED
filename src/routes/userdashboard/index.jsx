@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { formatDate } from 'date-fns/format'
 import NotFound from '@/assets/Dashboard/notfound.png'
 import {useAuth} from '@/lib/AuthContext'
+import { useQueryClient } from '@tanstack/react-query'
 
 
 export const Route = createFileRoute('/userdashboard/')({
@@ -21,14 +22,23 @@ function UserDashboard() {
   const {userData, isLoadingUserData, allEvent, userRegisteredEvents, fetchingAllEvents, errorLoadingEvents} = useAuth()
   const [date, setDate] = useState(new Date())
   const [filteredEvents, setFilteredEvents] = useState(allEvent);
+    const queryClient = useQueryClient()
+  
 
 
 
   // Load All Events FIrst
-  useEffect(()=>{
-    setFilteredEvents(allEvent);
-  }, [allEvent, userRegisteredEvents])
+useEffect(() => {
+  const refetchData = async () => {
+    await queryClient.refetchQueries({
+      queryKey: ['allEvent', userData?.uniqueId],
+      exact: true
+    });
+  };
   
+  refetchData();
+  setFilteredEvents(allEvent);
+}, [allEvent, userRegisteredEvents, queryClient, userData?.uniqueId]);
 
   // Handle Calendar Filtering
 const handleFilter = () => {
@@ -81,7 +91,6 @@ const handleFilter = () => {
                              
                                <h3 className="text-rubik text-[#64748B] text-[14px] flex items-center gap-2"> {_.icon && <_.icon className={`w-[15px]`} color={`${_.IconColor}`} />} {_.text}</h3>
                                <p className="text-[24px] font-[600] tracking-[1.3px] text-[#1E293B]">
-                               {/* {fetchingAllEvents} */}
                                {fetchingAllEvents ? <span className="loader"></span> : index == 0 ? allEvent?.length : index == 1 ?  userRegisteredEvents?.length : _.number} 
                                </p>
                              </CardContent>

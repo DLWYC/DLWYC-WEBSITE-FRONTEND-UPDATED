@@ -73,7 +73,7 @@ const RadioCard = ({ id, title, description, price, icon: Icon, isSelected, onSe
           {title}
         </h3>
         <p
-          className={`text-sm transition-colors ${
+          className={`text-[15px] transition-colors ${
             isSelected ? 'text-white' : 'text-gray-600'
           }`}
         >

@@ -91,9 +91,9 @@ return (
           />
         </div>
 
-        <p className="text-sm mt-4 text-center">
+        <p className="text-[15px] mt-4 text-center">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-blue-600 hover:underline">
+          <Link to="/usersignup" className="text-blue-600 hover:underline">
             Sign Up
           </Link>
         </p>

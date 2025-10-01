@@ -22,7 +22,7 @@ useEffect(()=>{
     if (isEditing) {
       return (
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">{label}</label>
+          <label className="block text-[15px] font-medium text-gray-700">{label}</label>
           {isTextarea ? (
             <textarea
               value={editData[field] || ''}
@@ -69,7 +69,7 @@ useEffect(()=>{
 
     return (
       <div className="space-y-1">
-        <label className="block text-sm text-gray-500">{label}</label>
+        <label className="block text-[15px] text-gray-500">{label}</label>
         <p className="text-gray-900 font-medium">{value || 'Not provided'}</p>
       </div>
     );

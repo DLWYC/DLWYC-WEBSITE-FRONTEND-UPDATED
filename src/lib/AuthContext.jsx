@@ -13,15 +13,12 @@ export function AuthProvider({children}){
     mutationFn: async({values})=>{
        const res = await axios.post(`${backendUrl}/api/userLogin`, values);
        localStorage.setItem("token", res.data.token);
-       console.log(res)
       return res
     }, onSuccess: (res) =>{
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      console.log("Successsss")
       return res
     },
     onError: async (err) =>{
-        console.log(err, err.response?.data?.errors)
         const errType = err.response?.data?.errors
         throw errType
         
@@ -67,13 +64,32 @@ retry: false,
 
   
   
+  // #:::::::::::::::  GET USER PAYMENT RECORDS FUNCTION :::::::::::::::::#
+  const {data: userPaymentRecord, isLoading: fetchingUserPaymentRecordLoadingStatus, isError: errorLoadingUserPaymentRecord, refetch} = useQuery({
+    queryKey: ['UserPaymentRecord', user?.uniqueId],
+    queryFn: async () =>{
+      const UserPaymentRecord = await axios.get(`${backendUrl}/api/payment/payment-history/${user?.uniqueId}`)
+      
+        return UserPaymentRecord.data.data
+    },
+    onError: (error)=>{
+      // console.log("Error: ", error)
+    },
+    enabled: !!user?.uniqueId,
+    refetchOnWindowFocus: false,
+    staleTime: 1000
+  })
+
+
+  // #:::::::::::::::  GET USER PAYMENT RECORDS FUNCTION :::::::::::::::::#
+  
+  
+  
   // #:::::::::::::::  GET USER REGISETRED FUNCTION :::::::::::::::::#
   const {data: userRegisteredEvents, isLoading: fetchingUserRegisteredEventsLoadingStatus, isError: errorLoadingUserRegisteredEvents} = useQuery({
     queryKey: ['userRegisteredEvents', user?.uniqueId],
     queryFn: async () =>{
-      // console.log('Fetching registered events for user:', user?.uniqueId, 'fullName:', user?.fullName); 
       const userRegisteredEvents = await axios.get(`${backendUrl}/api/userRegisteredEvents/${user?.fullName}/${user?.uniqueId}`)
-      // console.log("userRegisteredEventsdsjfbskdjbfb", userRegisteredEvents)
       
         return userRegisteredEvents.data.data
     },
@@ -97,7 +113,6 @@ const {
 } = useQuery({
   queryKey: ['allEvent', user?.uniqueId], // Include user ID since personalized
   queryFn: async () => {
-    // console.log('Fetching all events for user:', user?.uniqueId, 'using registered count:', userRegisteredEvents?.length || 0);
     const response = await axios.get(`${backendUrl}/api/admin/events`);
     const allEventsData = response.data.data;
 
@@ -115,44 +130,26 @@ const {
     }
 
 
-    console.log("This is the New MAPP insit", registrationMap)
-    // Process events with registration status
     const updatedEvents = allEventsData.map((event) => {
       const registrationInfo = registrationMap.get(event._id);
-      console.log("he Registration INFO:", registrationInfo)
       return {
         ...event,
-        // Clean boolean for registration status
         isRegistered: registrationInfo?.isRegistered,
-        // Specific payment status (null if not registered)
         paymentStatus: registrationInfo?.paymentStatus ,
       };
     });
 
-    console.log({
-      "Total Events": allEventsData.length,
-      "Registered Events": userRegisteredEvents?.length || 0,
-      "Updated Events Sample": updatedEvents // Log first 2 for debugging
-    });
-
-
+    // console.log({
+    //   "Total Events": allEventsData.length,
+    //   "Registered Events": userRegisteredEvents?.length || 0,
+    //   "Updated Events Sample": updatedEvents // Log first 2 for debugging
+    // });
 
     return updatedEvents;
-    // // Safe now: userRegisteredEvents is loaded, or query is disabled
-    // const registeredEventIds = new Set(userRegisteredEvents?.map((regEvent) => regEvent.eventId) || []);
-    // const registeredEventStatus = new Set(userRegisteredEvents?.map((regEvent) => regEvent.paymentStatus) || []);
 
-    // const updatedEvents = allEventsData.map((event) => ({
-    //   ...event,
-    //   isRegistered: registeredEventIds.has(event._id) ? registeredEventStatus : ""
-    // }));
-    
-    // console.log({ "Updated Events": updatedEvents, "User ECeve": registeredEventIds, "Status": registeredEventStatus})
-    // return updatedEvents;
   },
   enabled: !!user?.uniqueId && !fetchingUserRegisteredEventsLoadingStatus, // Depend on first query
   onSuccess: (updatedEvents) => {
-    // console.log('Updated events:', updatedEvents);
     return updatedEvents // Moved here; proper array logging
   },
   onError: (error) => {
@@ -172,7 +169,7 @@ const {
     queryClient.invalidateQueries({ queryKey: ['userRegisteredEvents', user?.uniqueId] });
     queryClient.invalidateQueries({ queryKey: ['allEvents', user?.uniqueId] });
   }
-}, [user]);
+}, [user, userRegisteredEvents]);
   // #:::::::::::::::  GET ALL EVENT FUNCTION :::::::::::::::::#
   
 
@@ -181,9 +178,7 @@ const {
   // #:::::::::::::::  USER LOGOUT FUNCTION :::::::::::::::::#
   const logout = () => {
     localStorage.setItem('token', '')
-    // console.log("LOGOUT::::", queryClient.getQueriesData())
     queryClient.clear();
-    // console.log("Logout Successful") 
   }
   // #:::::::::::::::  USER LOGOUT FUNCTION :::::::::::::::::#
 
@@ -211,6 +206,10 @@ const {
               fetchingUserRegisteredEventsLoadingStatus,
               errorLoadingUserRegisteredEvents,
 
+
+              userPaymentRecord, 
+              refetch,
+              fetchingUserPaymentRecordLoadingStatus,
 
                allEvent,
                fetchingAllEvents,
