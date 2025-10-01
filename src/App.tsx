@@ -1,12 +1,20 @@
-// src/App.tsx
-
 import { useAuth } from '@/lib/AuthContext'
-import { RouterProvider } from '@tanstack/react-router'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { router } from '@/routeTree.gen' // Assuming you have a router file
+import { routeTree } from '@/routeTree.gen' // Import routeTree, not router
 
 // Create a single, top-level instance of QueryClient.
 const queryClient = new QueryClient()
+
+// Create the router instance
+const router = createRouter({ routeTree })
+
+// Register the router for type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
 
 // This is your main application component that provides global contexts.
 function App() {

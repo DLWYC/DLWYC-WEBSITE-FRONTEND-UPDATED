@@ -22,4 +22,7 @@ export default defineConfig({
       '@': resolve(dirname(fileURLToPath(import.meta.url)), './src'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // Increase from default 500
+  },
 })
