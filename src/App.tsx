@@ -3,7 +3,7 @@
 import { useAuth } from '@/lib/AuthContext'
 import { RouterProvider } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { router } from 'router' // Assuming you have a router file
+import { router } from '@/router' // Assuming you have a router file
 
 // Create a single, top-level instance of QueryClient.
 const queryClient = new QueryClient()
