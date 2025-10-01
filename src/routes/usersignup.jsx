@@ -133,8 +133,7 @@ const SignUpForm = () => {
       
       try {
         // Replace this with your actual backend URL
-        const backendUrl = 'http://localhost:5000';
-        
+        const backendUrl = import.meta.env.VITE_BACKEND_URL
         const response = await axios.post(`${backendUrl}/api/userRegistration`, formData);
 
         const data = await response?.data;
