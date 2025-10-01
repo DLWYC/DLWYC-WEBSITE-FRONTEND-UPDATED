@@ -133,7 +133,7 @@ const SignUpForm = () => {
       
       try {
         // Replace this with your actual backend URL
-        const backendUrl = import.meta.env.VITE_BACKEND_URL
+        const backendUrl = 'https://dlwyc-api.onrender.com'
         const response = await axios.post(`${backendUrl}/api/userRegistration`, formData);
 
         const data = await response?.data;

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 const AuthContext = createContext();
 
 export function AuthProvider({children}){
-     const backendUrl = import.meta.env.VITE_BACKEND_URL
+     const backendUrl = 'https://dlwyc-api.onrender.com'
      const queryClient = useQueryClient()
 
      // #:::::::::::::::  GET USER LOGIN FUNCTION :::::::::::::::::#
