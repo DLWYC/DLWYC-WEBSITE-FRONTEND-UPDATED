@@ -6,7 +6,14 @@ import { useAuth } from '@/lib/AuthContext'
 import { router } from '@/router'
 
 // Create a single, top-level instance of QueryClient.
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+})
 
 // This is your main application component that provides global contexts.
 function App() {
