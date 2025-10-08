@@ -6,11 +6,13 @@ const AuthContext = createContext();
 
 export function AuthProvider({children}){
      const queryClient = useQueryClient()
+     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
      // #:::::::::::::::  GET USER LOGIN FUNCTION :::::::::::::::::#
      const login = useMutation({
     mutationFn: async({values})=>{
-       const res = await axios.post(`https://dlwyc-api.onrender.com/api/userLogin`, values);
+      //  const res = await axios.post(`https://dlwyc-api.onrender.com/api/userLogin`, values);
+       const res = await axios.post(`${backendUrl}/api/userLogin`, values);
        localStorage.setItem("token", res.data.token);
       return res
     }, onSuccess: (res) =>{
@@ -60,6 +62,7 @@ retry: false,
   // #:::::::::::::::  GET USER DATA FUNCTION :::::::::::::::::#
   
 
+  console.log("User From Auth Context: ", user)
 
   
   
@@ -143,7 +146,7 @@ const {
     //   "Registered Events": userRegisteredEvents?.length || 0,
     //   "Updated Events Sample": updatedEvents // Log first 2 for debugging
     // });
-
+    console.log("updated", updatedEvents)
     return updatedEvents;
 
   },

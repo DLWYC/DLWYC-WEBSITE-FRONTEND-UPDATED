@@ -91,7 +91,7 @@ const handleFilter = () => {
                              
                                <h3 className="text-rubik text-[#64748B] text-[14px] flex items-center gap-2"> {_.icon && <_.icon className={`w-[15px]`} color={`${_.IconColor}`} />} {_.text}</h3>
                                <p className="text-[24px] font-[600] tracking-[1.3px] text-[#1E293B]">
-                               {fetchingAllEvents ? <span className="loader"></span> : index == 0 ? allEvent?.length : index == 1 ?  userRegisteredEvents?.length : _.number} 
+                               {fetchingAllEvents ? ( <span className="loader"></span> ) : ( index === 0 ? (allEvent?.length || 0) :  index === 1 ? (userRegisteredEvents?.length || 0) : 0 )}
                                </p>
                              </CardContent>
                            </Card>
@@ -113,7 +113,12 @@ const handleFilter = () => {
                     <div className='space-y-4'>
                                {/* { : ''} */}
 
-                  {fetchingAllEvents ? <span className="loader"></span> : errorLoadingEvents ? "Please Refresh The Page" : filteredEvents?.length === 0 ? ( 
+                  {fetchingAllEvents ? <span className="loader"></span> : errorLoadingEvents ? 
+                    <div className="border flex flex-col justify-center items-center h-[410px] space-y-5">
+                    <img src={NotFound} alt="" className='w-[90px]' />
+                    <p className='text-red-500'>No Upcoming Event</p>
+                    </div>
+                   : filteredEvents?.length === 0 ? ( 
                     <div className="border flex flex-col justify-center items-center h-[410px] space-y-5">
                     <img src={NotFound} alt="" className='w-[90px]' />
                     <p className='text-red-500'>Sorry No Event For The Day</p>

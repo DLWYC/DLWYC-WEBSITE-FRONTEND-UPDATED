@@ -1,3 +1,272 @@
+// ==================== MAIN SOLUTION: 7-Character Code Generator ====================
+function generateUniqueSevenCharCodes(numberOfPersons) {
+  const codes = new Set(); // Use Set to ensure uniqueness
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // 36 possible characters
+  const codeLength = 7;
+  
+  while (codes.size < numberOfPersons) {
+    let code = '';
+    
+    // Generate exactly 7 random characters
+    for (let i = 0; i < codeLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters.charAt(randomIndex);
+    }
+    
+    codes.add(code); // Set automatically handles duplicates
+  }
+  
+  return Array.from(codes);
+}
+
+
+
+// Usage:
+const codes = generateUniqueSevenCharCodes(5);
+console.log(codes); 
+// Output: ['A1B2C3D', 'X9Y8Z7W', 'M4N5P6Q', 'R2S3T4U', 'V7W8X9Y']
+console.log(`Generated ${codes.length} unique codes`);
+
+// ==================== OPTIMIZED VERSION ====================
+function generateUniqueSevenCharCodesOptimized(numberOfPersons) {
+  const codes = new Set();
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  
+  // Check if request is theoretically possible
+  const maxPossibleCodes = Math.pow(36, 7); // 36^7 = ~78 billion codes
+  if (numberOfPersons > maxPossibleCodes) {
+    throw new Error(`Cannot generate ${numberOfPersons} unique codes. Maximum possible: ${maxPossibleCodes}`);
+  }
+  
+  while (codes.size < numberOfPersons) {
+    // More efficient string building
+    const code = Array.from({ length: 7 }, () => 
+      characters[Math.floor(Math.random() * characters.length)]
+    ).join('');
+    
+    codes.add(code);
+  }
+  
+  return Array.from(codes);
+}
+
+// ==================== WITH PROGRESS CALLBACK ====================
+function generateUniqueSevenCharCodesWithProgress(numberOfPersons, progressCallback) {
+  const codes = new Set();
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let lastReportedProgress = 0;
+  
+  while (codes.size < numberOfPersons) {
+    const code = Array.from({ length: 7 }, () => 
+      characters[Math.floor(Math.random() * characters.length)]
+    ).join('');
+    
+    codes.add(code);
+    
+    // Report progress every 10% or every 1000 codes (whichever is smaller)
+    const progress = Math.floor((codes.size / numberOfPersons) * 100);
+    if (progress > lastReportedProgress && (progress % 10 === 0 || codes.size % 1000 === 0)) {
+      progressCallback?.(codes.size, numberOfPersons, progress);
+      lastReportedProgress = progress;
+    }
+  }
+  
+  return Array.from(codes);
+}
+
+// Usage with progress:
+const codesWithProgress = generateUniqueSevenCharCodesWithProgress(10000, 
+  (current, total, percent) => {
+    console.log(`Progress: ${current}/${total} (${percent}%)`);
+  }
+);
+
+// ==================== ASYNC VERSION (Non-blocking for large numbers) ====================
+async function generateUniqueSevenCharCodesAsync(numberOfPersons, batchSize = 1000) {
+  const codes = new Set();
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  
+  while (codes.size < numberOfPersons) {
+    // Process in batches to avoid blocking the main thread
+    const currentBatchSize = Math.min(batchSize, numberOfPersons - codes.size);
+    
+    for (let i = 0; i < currentBatchSize; i++) {
+      const code = Array.from({ length: 7 }, () => 
+        characters[Math.floor(Math.random() * characters.length)]
+      ).join('');
+      
+      codes.add(code);
+    }
+    
+    // Yield control back to the event loop
+    await new Promise(resolve => setTimeout(resolve, 0));
+  }
+  
+  return Array.from(codes);
+}
+
+// Usage:
+// const asyncCodes = await generateUniqueSevenCharCodesAsync(50000);
+
+// ==================== WITH EXISTING CODES CHECK ====================
+function generateUniqueSevenCharCodesWithExisting(numberOfPersons, existingCodes = []) {
+  const codes = new Set(existingCodes); // Start with existing codes
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const originalSize = codes.size;
+  
+  while (codes.size < originalSize + numberOfPersons) {
+    const code = Array.from({ length: 7 }, () => 
+      characters[Math.floor(Math.random() * characters.length)]
+    ).join('');
+    
+    codes.add(code);
+  }
+  
+  // Return only the new codes
+  return Array.from(codes).slice(originalSize);
+}
+
+// Usage:
+const existingCodes = ['ABC1234', 'XYZ9876'];
+const newCodes = generateUniqueSevenCharCodesWithExisting(5, existingCodes);
+console.log(newCodes); // Only returns the 5 new codes, not the existing ones
+
+// ==================== REACT HOOK VERSION ====================
+import { useState, useCallback } from 'react';
+
+function useSevenCharCodeGenerator() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedCount, setGeneratedCount] = useState(0);
+  
+  const generateCodes = useCallback(async (numberOfPersons) => {
+    setIsGenerating(true);
+    setGeneratedCount(0);
+    
+    try {
+      const codes = new Set();
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      
+      while (codes.size < numberOfPersons) {
+        const code = Array.from({ length: 7 }, () => 
+          characters[Math.floor(Math.random() * characters.length)]
+        ).join('');
+        
+        codes.add(code);
+        
+        // Update progress
+        if (codes.size % 100 === 0 || codes.size === numberOfPersons) {
+          setGeneratedCount(codes.size);
+          // Yield control for UI updates
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+      }
+      
+      return Array.from(codes);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, []);
+  
+  return { generateCodes, isGenerating, generatedCount };
+}
+
+// Usage in React:
+// const { generateCodes, isGenerating, generatedCount } = useSevenCharCodeGenerator();
+// const handleGenerate = async () => {
+//   const codes = await generateCodes(1000);
+//   console.log('Generated codes:', codes);
+// };
+
+// ==================== PERFORMANCE TESTING ====================
+function testCodeGeneration() {
+  console.log('Testing 7-character code generation...');
+  
+  // Test small batch
+  console.time('Generate 100 codes');
+  const small = generateUniqueSevenCharCodes(100);
+  console.timeEnd('Generate 100 codes');
+  console.log(`Generated ${small.length} unique codes`);
+  
+  // Test medium batch
+  console.time('Generate 10,000 codes');
+  const medium = generateUniqueSevenCharCodes(10000);
+  console.timeEnd('Generate 10,000 codes');
+  console.log(`Generated ${medium.length} unique codes`);
+  
+  // Verify uniqueness
+  const uniqueCheck = new Set(medium);
+  console.log(`Uniqueness check: ${uniqueCheck.size === medium.length ? 'PASS' : 'FAIL'}`);
+}
+
+// Run test:
+// testCodeGeneration();
+
+// ==================== SIMPLE ONE-LINER VERSION ====================
+const generateSevenCharCodes = (count) => 
+  Array.from(new Set(Array.from({ length: count * 2 }, () => 
+    Math.random().toString(36).substring(2, 9).toUpperCase()
+  ))).slice(0, count);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const handleEdit = () => {
   setIsEditing(true);
   setEditData({ ...userData });
