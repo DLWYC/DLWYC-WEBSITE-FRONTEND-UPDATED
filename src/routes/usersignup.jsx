@@ -136,8 +136,7 @@ const SignUpForm = () => {
       
       try {
         // Replace this with your actual backend URL
-        const response = await axios.post(`https://dlwyc-api.onrender.com/api/userRegistration`, formData);
-        // const response = await axios.post(`${backendUrl}/api/userRegistration`, formData);
+        const response = await axios.post(`${backendUrl}/api/userRegistration`, formData);
 
         const data = await response?.data;
         console.log("User data", data)

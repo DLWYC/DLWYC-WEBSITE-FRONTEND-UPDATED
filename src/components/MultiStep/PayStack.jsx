@@ -21,11 +21,12 @@ const PAYMENT_STATUS = {
 };
 
 function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayment }) {
-  const numberOfPaymentSess = values?.numberOfPayment
+  const numberOfPaymentSess = values?.numberOfPayment ?? 0 
+  const single = 100
   
   const PAYMENT_AMOUNTS = {
-    single: 7500,
-    multiple: 7500 * (numberOfPaymentSess || 1)
+    single: single,
+    multiple: single  * (numberOfPaymentSess + 1)
   };
   const [paymentStatus, setPaymentStatus] = useState(PAYMENT_STATUS.PENDING);
   const [isProcessing, setIsProcessing] = useState(false);
