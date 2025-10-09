@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import MenuItems from "@/data/Dashboard";
+import {SuperAdminMenuItems} from "@/data/Dashboard";
 import { useState } from "react";
 import { useEffect } from "react";
 import {useAuth} from "@/lib/AuthContext"
@@ -30,14 +31,16 @@ const AppSidebar = () => {
     if(pathname.startsWith('/userdashboard')){
       setSideBarLinks(MenuItems) 
     }
-    
+    else if(pathname.startsWith('/superadmin')){
+      setSideBarLinks(SuperAdminMenuItems) 
+    }
   }, [pathname])
   
 
 
 
   return (
-    <Sidebar className="bg-[white]  z-[600]">
+    <Sidebar className="bg-[white]  z-[600] font-rubik">
       <SidebarHeader className="bg-white" >
           <img src="/main_logo.svg" alt="" />
       </SidebarHeader>

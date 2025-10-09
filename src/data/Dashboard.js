@@ -14,13 +14,18 @@ import {
   Lock,
   Shield,
   Bell,
+  Calendar as CalendarIcon,
+  ChartArea as Chart,
 } from "lucide-react";
 
 const MenuItems = [
   { name: "Home", icon: Home, url: '/userdashboard' },
-  // { name: "Event History", icon: ListTodo, url: '/userdashboard/eventhistory' },
   { name: "Payment History", icon: User, url: '/userdashboard/payments' },
-  // { name: "Profile", icon: User, url: '/userdashboard/profile' },
+];
+
+const SuperAdminMenuItems = [
+  { name: "Dashboard", icon: Chart, url: '/superadmin' },
+  { name: "Events", icon: CalendarIcon, url: '/superadmin/events' },
 ];
 
 const userDashboardTopMenu = [
@@ -30,9 +35,15 @@ const userDashboardTopMenu = [
 
 
 const DashboardCards = [
-  { text: "Upcoming", icon: CalendarClockIcon, url: '/userdashboard/eventhistory', number: 3, IconColor: "#2563EB" },
-  { text: "Registered", icon: History, url: '/userdashboard/eventhistory', number: 5, IconColor: "#10B981" },
-  { text: "Notification", icon: LucideBell, url: '/userdashboard/eventhistory', number: 10, IconColor: "#F59E0B" },
+  { text: "Upcoming", icon: CalendarClockIcon, number: 3, IconColor: "#2563EB" },
+  { text: "Registered", icon: History, number: 5, IconColor: "#10B981" },
+  { text: "Notification", icon: LucideBell, number: 10, IconColor: "#F59E0B" },
+]
+
+const SuperAdminDashboardCards = [
+  { text: "Total Events", icon: CalendarClockIcon, number: 3, IconColor: "#2563EB" },
+  { text: "Total Registrations", icon: History, number: 5, IconColor: "#10B981" },
+  { text: "Revenue", icon: LucideBell, number: 10, IconColor: "#F59E0B" },
 ]
 
 const Events = [
@@ -60,5 +71,5 @@ const sidebarItems = [
   // { id: 'security', label: 'Security Settings', icon: Shield },
 ];
 
-export { userDashboardTopMenu, Events, DashboardCards, documentTypes, sidebarItems }
+export { userDashboardTopMenu, Events, DashboardCards, documentTypes, sidebarItems, SuperAdminMenuItems, SuperAdminDashboardCards }
 export default MenuItems 

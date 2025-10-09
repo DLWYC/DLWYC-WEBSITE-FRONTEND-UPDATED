@@ -14,6 +14,8 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  console.log(`This is the backendURl ${backendUrl}`)
   return (
     <>
 

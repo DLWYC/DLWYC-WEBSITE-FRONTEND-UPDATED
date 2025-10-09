@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '@/lib/AuthContext'
 import { router } from '@/router'
 
+
 function App() {
   const auth = useAuth()
 
