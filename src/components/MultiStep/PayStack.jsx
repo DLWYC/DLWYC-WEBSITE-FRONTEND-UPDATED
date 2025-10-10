@@ -270,7 +270,7 @@ function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayme
         
         {paymentStatus === PAYMENT_STATUS.FAILED && (
           <p className="text-red-500 text-[15px] text-center">
-            Payment failed. Please try again or contact support.
+              
           </p>
         )}
       </div>
