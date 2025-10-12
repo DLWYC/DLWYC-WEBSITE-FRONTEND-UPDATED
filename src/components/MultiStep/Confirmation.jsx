@@ -1,14 +1,21 @@
+import { useAuth } from "@/lib/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { useState } from "react";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
 
+
 const Confirmation = ({values}) => {
   console.log("Values CONFIRMTION PAGE", values)
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const backendURL = import.meta.env.VITE_BACKEND_URL
+  const queryClient = useQueryClient()
+  const {userData, userRegisteredEvents} = useAuth()
+  // console.log("all Cached Data", queryClient.getQueryData(['allEvent', userData?.uniqueId, userRegisteredEvents]), "ALL", queryClient.getQueriesData())
+
 
   const ERROR_MESSAGES = {
   CODE_UPDATE_FAILED: 'Failed to update code status',
@@ -120,7 +127,15 @@ const Confirmation = ({values}) => {
           // Success
           toast.success("Registration completed successfully");
           console.log('Registration completed successfully');
-          
+
+           // CRITICAL: Invalidate queries to refresh data
+      await queryClient.invalidateQueries({
+        queryKey: ['userRegisteredEvents', userData?.uniqueId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['allEvent', userData?.uniqueId, userRegisteredEvents],
+      });
+
           // Navigate to dashboard
           navigate({ to: '/userDashboard' });
         }

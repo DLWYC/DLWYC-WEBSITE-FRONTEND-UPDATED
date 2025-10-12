@@ -10,15 +10,18 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus,
   const [paymentCode, setpaymentCode] = useState()
   const [payersId, setpayersId] = useState()
   const [numberOfPayment, setNumberOfPayment] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
+  
 
   const verifyCode = async () => {
+    setIsLoading(true)
     try{
     
-    if(!payersId || payersId == ''){
+    if(!payersId || payersId === ''){
       toast.error("Please Enter The Payer's ID")
       return
     }
-    else if(!paymentCode || paymentCode == ''){
+    else if(!paymentCode || paymentCode === ''){
       toast.error("Please Enter The Payment Code")
       return
     }
@@ -41,7 +44,9 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus,
       setPaymentCodeStatus(error?.response?.data?.error?.error)
     toast.error(errorMessage);
     }
-    
+    finally{
+      setIsLoading(false)
+    }
       
   };
 
@@ -101,24 +106,35 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus,
             <div className="">
                <div className="lg:flex  items-center">
         <label htmlFor="numberOfPayment" className="mr-2 font-500 text-[14px] text-[#060f3b]">Select Number: <span className="text-red-500">*</span></label>
-        <Input type="number" name="numberOfPayment" id="numberOfPayment" placeholder="0" className="border-0 border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setNumberOfPayment(Number(e.target.value))}/>
+        <Input type="number" name="numberOfPayment" id="numberOfPayment" placeholder="0" className="border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setNumberOfPayment(Number(e.target.value))}/>
         </div>
             </div>
           ) : (
-            <div className="flex">
+            <div className="flex lg:flex-row flex-col lg:space-x-5 lg:space-y-0 space-y-3">
 
             <div className="lg:flex  items-center">
         <label htmlFor="payersId" className="mr-2 font-500 text-[14px] text-[#060f3b]">Payer UniqueID: <span className="text-red-500">*</span></label>
-        <Input type="text" name="payersId" id="payersId" className="border-0 border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpayersId(e.target.value)}/>
+        <Input type="text" name="payersId" id="payersId" className="border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpayersId(e.target.value)}/>
         </div>
 
 <div className="lg:flex  items-center">
         <label htmlFor="verifyCode" className="font-500 mr-2 text-[14px] text-[#060f3b]">Payment Code:</label>
-        <Input type="text" name="verifyCode" id="verifyCode" className="border-0 border border-gray-600 lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpaymentCode(e.target.value)}/>
+        <Input type="text" name="verifyCode" id="verifyCode" className="border border-gray-600 lg:w-[50%] rounded-none mr-2" onChange={(e)=>setpaymentCode(e.target.value)}/>
 </div>
-          <button className="relative py-2 px-4 lg:mt-0 mt-3 cursor-pointer bg-primary-main text-white text-[13px]" onClick={verifyCode}>
-            Verify Code
-          </button>
+         <button 
+  className="relative py-2 px-4 lg:mt-0 mt-3 cursor-pointer bg-primary-main text-white text-[13px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+  onClick={verifyCode}
+  disabled={isLoading}
+>
+  {isLoading ? (
+    <>
+     <span className="loader"></span>
+      Verifying...
+    </>
+  ) : (
+    'Verify Code'
+  )}
+</button>
             </div>
           )} 
         </div>

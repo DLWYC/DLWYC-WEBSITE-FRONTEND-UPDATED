@@ -11,13 +11,13 @@ export const Route = createFileRoute('/userdashboard/event/$id')({
 })
 
 function SingleEvent() {
-     const {userData} = useAuth()
+     const {userData, userRegisteredEvents} = useAuth()
      const queryClient = useQueryClient()
      const {id}   = Route.useParams()
      const [cachedEvent, setCachedEvent] = useState('')
 
 useEffect(() => {
-const events = queryClient.getQueryData(['allEvent', userData?.uniqueId])
+const events = queryClient.getQueryData(['allEvent', userData?.uniqueId, userRegisteredEvents])
 const event = events?.find((event) => event._id === id);
 setCachedEvent(event)
   }, [queryClient]);
@@ -25,7 +25,7 @@ setCachedEvent(event)
   console.log('sdsdfaaaaaaa: ', cachedEvent)
 
   return(
-     <div className=" h-screen bg-white mt-3 py-[330px] flex items-center justify-center font-rubik">
+     <div className=" bg-white mt-3 py-[30px] flex items-center justify-center font-rubik">
           <div className="basis-[80%] flex flex-col gap-3 ">
                <p className='text-[18px]  '>Register For: <span className='text-primary-main font-bold'>{cachedEvent.eventTitle}</span> </p>
 

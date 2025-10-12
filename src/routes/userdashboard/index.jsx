@@ -21,24 +21,16 @@ export const Route = createFileRoute('/userdashboard/')({
 function UserDashboard() {
   const {userData, isLoadingUserData, allEvent, userRegisteredEvents, fetchingAllEvents, errorLoadingEvents} = useAuth()
   const [date, setDate] = useState(new Date())
-  const [filteredEvents, setFilteredEvents] = useState(allEvent);
-    const queryClient = useQueryClient()
+  const [filteredEvents, setFilteredEvents] = useState([]);
   
 
 
 
   // Load All Events FIrst
 useEffect(() => {
-  const refetchData = async () => {
-    await queryClient.refetchQueries({
-      queryKey: ['allEvent', userData?.uniqueId],
-      exact: true
-    });
-  };
-  
-  refetchData();
   setFilteredEvents(allEvent);
-}, [allEvent, userRegisteredEvents, queryClient, userData?.uniqueId]);
+}, [allEvent]);
+
 
   // Handle Calendar Filtering
 const handleFilter = () => {
@@ -56,6 +48,7 @@ const handleFilter = () => {
 };
 
 // console.log(filtere)
+
 
 
 

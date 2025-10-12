@@ -372,7 +372,7 @@ const SignUpForm = () => {
 
 
             {/* Profile Picture */}
-            <div>
+            {/* <div>
               <label className="block text-[15px] font-medium text-gray-700 mb-2">
                 Profile Picture <span className="text-gray-500 text-xs">(Optional)</span>
               </label>
@@ -410,7 +410,7 @@ const SignUpForm = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Submit Button */}
               <button

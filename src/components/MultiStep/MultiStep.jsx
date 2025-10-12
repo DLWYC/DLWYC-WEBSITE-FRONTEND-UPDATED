@@ -5,6 +5,7 @@ import Form from './Forms';
 import { formStep } from '@/data/Forms';
 import PayStack from './PayStack';
 import  Confirmation from './Confirmation'
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 // Custom MultiStep component that mimics react-multistep
@@ -36,10 +37,10 @@ const MultiStep = ({
   const currentStepData = steps[currentStep];
 
   return (
-    <div className="multistep-container">
+    <div className="multistep-container relative">
       {/* **************** Step Indicator  **************** */}
       {showTitles && (
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-8 text-center  bg-[white] p-2 rounded-md" style={{ flexDirection: direction }}>
           {steps.map((step, index) => (
             <div key={index} className="flex items-center">
               <div className={`flex flex-col items-center ${direction === 'column' ? 'mb-4' : ''}`}>
@@ -70,18 +71,18 @@ const MultiStep = ({
       {/* **************** Step Indicator  **************** */}
 
       {/* Step Content */}
-      <div 
-        className="step-content-container min-h-[300px] flex items-center justify-center"
+      <ScrollArea 
+        className="step-content-container min-h-[300px] flex items-center justify-center" //
         style={stepCustomStyle}
       >
         <div className="w-full">
           {currentStepData.component}
         </div>
-      </div>
+      </ScrollArea>
 
       {/* Navigation Buttons */}
       {showNavigation && (
-        <div className="flex justify-between items-center mt-8">
+        <div className="flex lg:flex-row lg:justify-between lg:items-center flex-col-reverse text-center gap-2 mt-8">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
@@ -96,7 +97,7 @@ const MultiStep = ({
             {prevButton.title}
           </button>
           
-          <div className="text-[15px] text-gray-500">
+          <div className="lg:text-[15px] text-[13px] text-gray-500">
             Step {currentStep + 1} of {steps.length}
           </div>
           
@@ -207,32 +208,40 @@ const MultiSteps = ({userData, eventDetails}) => {
         stepCustomStyle={{
           transition: 'all 0.3s ease-in-out',
         }}
-        prevButton={{
-          title: 'Back',
-          style: {
-            backgroundColor: '#ab0606', // Tailwind red-400
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: '500',
-          },
-        }}
-        nextButton={{
-          title: 'Continue',
-          style: {
-            backgroundColor: '#091e54', // Tailwind primary-main
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: '500',
-          },
-        }}
+       prevButton={{
+  title: 'Back',
+  style: {
+    backgroundColor: '#ab0606',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px', // Space between icon and text
+  },
+}}
+nextButton={{
+  title: 'Continue',
+  style: {
+    backgroundColor: '#091e54',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px', // Space between icon and text
+  },
+}}
         showNavigation={true}
         showTitles={true}
         direction="row"

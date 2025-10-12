@@ -20,8 +20,8 @@ export function AuthProvider({children}){
     },
     onError: async (err) =>{
         const errType = err.response?.data?.errors
+        console.log("Error Type: ", errType)
         throw errType
-        
     }
   })
      // #:::::::::::::::  GET USER LOGIN FUNCTION :::::::::::::::::#
@@ -49,7 +49,13 @@ export function AuthProvider({children}){
         return userDashboardData.data.data
       }
       catch(err){
-        const errMessage = (err?.response?.data?.message)
+        const errMessage = err?.response?.data?.message
+        const nothing = err?.response?.data?.error?.error0610428194
+        console.log("Error Message From Auth Context: ", err)
+        if(nothing == "Nothing"){
+          console.log("No User Data Found")
+          throw new Error("INVALID_TOKEN")
+        }
         if(errMessage == "Invalid token"){
           throw new Error("INVALID_TOKEN")
         }
@@ -91,7 +97,7 @@ retry: false,
     queryKey: ['userRegisteredEvents', user?.uniqueId],
     queryFn: async () =>{
       const userRegisteredEvents = await axios.get(`${backendUrl}/api/userRegisteredEvents/${user?.fullName}/${user?.uniqueId}`)
-      
+      console.log("User Registered Events:",userRegisteredEvents )
         return userRegisteredEvents.data.data
     },
     onError: (error)=>{
@@ -105,72 +111,48 @@ retry: false,
   
   
 
-
-  // #:::::::::::::::  GET ALL EVENT FUNCTION :::::::::::::::::#
+// #:::::::::::::::  GET ALL EVENT FUNCTION :::::::::::::::::#
 const {
-  data: allEvent, // Renamed for clarity (was 'allEvent')
+  data: allEvent,
   isLoading: fetchingAllEvents,
   isError: errorLoadingEvents,
 } = useQuery({
-  queryKey: ['allEvent', user?.uniqueId], // Include user ID since personalized
+  queryKey: ['allEvent', user?.uniqueId, userRegisteredEvents], // Add userRegisteredEvents to the key
   queryFn: async () => {
     const response = await axios.get(`${backendUrl}/api/admin/events`);
     const allEventsData = response.data.data;
 
-       const registrationMap = new Map();
+    const registrationMap = new Map();
     
     if (userRegisteredEvents?.length) {
       userRegisteredEvents.forEach(regEvent => {
         registrationMap.set(regEvent.eventId, {
-          isRegistered: regEvent.paymentStatus == 'success' ? true : false,
+          isRegistered: regEvent.paymentStatus === 'success' ? true : false,
           paymentStatus: regEvent.paymentStatus,
-          registrationDate: regEvent.registrationDate, // if available
-          // Add other registration details as needed
+          registrationDate: regEvent.registrationDate,
         });
       });
     }
-
 
     const updatedEvents = allEventsData.map((event) => {
       const registrationInfo = registrationMap.get(event._id);
       return {
         ...event,
         isRegistered: registrationInfo?.isRegistered,
-        paymentStatus: registrationInfo?.paymentStatus ,
+        paymentStatus: registrationInfo?.paymentStatus,
       };
     });
 
-    // console.log({
-    //   "Total Events": allEventsData.length,
-    //   "Registered Events": userRegisteredEvents?.length || 0,
-    //   "Updated Events Sample": updatedEvents // Log first 2 for debugging
-    // });
     console.log("updated", updatedEvents)
     return updatedEvents;
-
   },
-  enabled: !!user?.uniqueId && !fetchingUserRegisteredEventsLoadingStatus, // Depend on first query
-  onSuccess: (updatedEvents) => {
-    return updatedEvents // Moved here; proper array logging
-  },
+  enabled: !!user?.uniqueId && !fetchingUserRegisteredEventsLoadingStatus,
   onError: (error) => {
     console.error('Failed to load all events:', error);
-    // toast.error('Failed to load events');
   },
   refetchOnMount: true,
   refetchOnWindowFocus: true,
 });
-
-
-
-  useEffect(() => {
-  if (user?.uniqueId) {
-    // Invalidate and refetch for this user
-    console.log("This is User From this point: ",user)
-    queryClient.invalidateQueries({ queryKey: ['userRegisteredEvents', user?.uniqueId] });
-    queryClient.invalidateQueries({ queryKey: ['allEvents', user?.uniqueId] });
-  }
-}, [user, userRegisteredEvents]);
   // #:::::::::::::::  GET ALL EVENT FUNCTION :::::::::::::::::#
   
 
