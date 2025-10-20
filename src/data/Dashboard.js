@@ -37,7 +37,6 @@ const userDashboardTopMenu = [
 const DashboardCards = [
   { text: "Upcoming", icon: CalendarClockIcon, number: 3, IconColor: "#2563EB" },
   { text: "Registered", icon: History, number: 5, IconColor: "#10B981" },
-  { text: "Notification", icon: LucideBell, number: 10, IconColor: "#F59E0B" },
 ]
 
 const SuperAdminDashboardCards = [

@@ -13,7 +13,7 @@ export const Route = createRootRoute({
           
           {location.pathname.startsWith('/userdashboard') || location.pathname.startsWith('/superadmin') ? null : <NavBar />}
           <Outlet />
-          {location.pathname.startsWith('/userdashboard') || location.pathname.startsWith('/superadmin') ? null: <Footer />}
+          {location.pathname.startsWith('/userdashboard') || location.pathname.startsWith('/superadmin') ? null : <Footer />}
         </GoogleOAuthProvider>
       </>
     )

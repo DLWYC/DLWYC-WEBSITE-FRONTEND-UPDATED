@@ -56,7 +56,7 @@ function PayStack({ userDetails, values, setValues, paymentOption, numberOfPayme
       console.error('Payment verification failed:', error);
       throw new Error(error.response?.data?.message || 'Payment verification failed');
     }
-  }, [backendURL, userDetails?.uniqueId]);
+  }, [backendURL, userDetails?.uniqueId]);  
 
 
 

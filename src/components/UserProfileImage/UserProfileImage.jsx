@@ -12,7 +12,7 @@ const UserProfileImage = ({imageWidth, className}) =>{
       width: `${imageWidth}px`,
       height: `${imageWidth}px`,
     }}
-    className={`flex place-content-center items-center ${className}`}
+    className={`flex place-content-center items-center border ${className}`}
   >
     <AvatarImage src={userData?.profilePicture} />
         <AvatarFallback className="border-primary-main"><UserIcon color="#091e54" /></AvatarFallback>

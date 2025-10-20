@@ -25,14 +25,12 @@ setCachedEvent(event)
   console.log('sdsdfaaaaaaa: ', cachedEvent)
 
   return(
-     <div className=" bg-white mt-3 py-[30px] flex items-center justify-center font-rubik">
-          <div className="basis-[80%] flex flex-col gap-3 ">
-               <p className='text-[18px]  '>Register For: <span className='text-primary-main font-bold'>{cachedEvent.eventTitle}</span> </p>
+     <div className=" bg-[#f4f7fa]py-[30px] font-rubik border">
 
-               <div className="flex items-center ">
+               {/* <p className='text-[18px] border border-red-500'>Register For: <span className='text-primary-main font-bold'>{cachedEvent.eventTitle}</span> </p> */}
+               <div className="flex items-center basis-[50%]">
                     <MultiSteps userData={userData} eventDetails={cachedEvent} />
                </div>
-          </div>
      </div>
   )
 }

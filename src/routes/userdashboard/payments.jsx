@@ -33,7 +33,7 @@ export const Route = createFileRoute('/userdashboard/payments')({
 
 
 const ViewPayment = () => {
-     const backendUrl = import.meta.env.VITE_BACKEND_URL
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
   const {userPaymentRecord, refetch} = useAuth()
   const data  = userPaymentRecord;
   const [searchTerm, setSearchTerm] = useState('');
@@ -115,18 +115,6 @@ const ViewPayment = () => {
     }));
   };
 
-  // // Filter data based on search term
-  // const filteredData = useMemo(() => {
-  //   if (!searchTerm) return data;
-
-  //   return data.filter((row) => {
-  //     return allColumns.some((column) => {
-  //       const value = row[column.key];
-  //       if (value === null || value === undefined) return false;
-  //       return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-  //     });
-  //   });
-  // }, [data, searchTerm]);
   const filteredData = useMemo(() => {
   if (!data || !Array.isArray(data)) return []; // ← Add this check
   if (!searchTerm) return data;
@@ -281,42 +269,42 @@ const ViewPayment = () => {
 
 
   return (
-    <div className="w-full p-6 bg-gray-50 font-inter">
+    <div className="w-full lg:p-6 py-4 bg-gray-50 font-inter">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
+        <div className="lg:px-6 px-4 py-4 border-b border-gray-200">
+          <div className="lg:flex items-center justify-between">
+
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">Payment Data</h2>
               <p className="text-[15px] text-gray-500 mt-1">
                 View and manage payment records
               </p>
             </div>
-            <div className="border flex items-center justify-between gap-5">
-    <button
-  onClick={handleRefresh}
-  disabled={isRefreshing}
-  className="flex items-center gap-2 px-4 py-2 text-white rounded-lg hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-  style={{ backgroundColor: '#091e54' }}
->
-  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-  {isRefreshing ? 'Refreshing...' : 'Refresh'}
-</button>
+
+            <div className="flex items-center lg:justify-between lg:gap-5 gap-3 lg:mt-0 mt-2">
+            <button onClick={handleRefresh} disabled={isRefreshing} 
+            className="flex items-center gap-2 lg:px-4 lg:py-2 px-[25px] py-[7px] text-white rounded-sm hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
+            style={{ backgroundColor: '#091e54' }}
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <p className='lg:flex hidden'>{isRefreshing ? 'Refreshing...' : 'Refresh'}</p>
+          </button>
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 px-4 py-2 text-white rounded-lg hover:bg-opacity-90 transition-colors"
+              className="flex items-center gap-2 lg:px-4 lg:py-2 px-[25px] py-[7px] text-white rounded-sm hover:bg-opacity-90 transition-colors"
               style={{ backgroundColor: '#091e54' }}
             >
               <Download className="w-4 h-4" />
-              Export CSV
+              <p className="lg:flex hidden">Export CSV</p>
             </button>
             </div>
           </div>
         </div>
 
         {/* Filters and Search */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center gap-4">
+        <div className="lg:px-6 px-4 py-4 border-b border-gray-200">
+          <div className="lg:flex grid flex-wrap items-center gap-4">
             {/* Global Search */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -488,8 +476,8 @@ const ViewPayment = () => {
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-4 border-t border-gray-200">
-          <div className="flex items-center justify-between">
+        <div className="lg:px-6 px-4 py-4 border-t border-gray-200">
+          <div className="lg:flex grid items-center justify-between gap-4">
             {/* Pagination Info */}
             <div className="text-[15px] text-gray-600">
               Showing{' '}
@@ -502,7 +490,7 @@ const ViewPayment = () => {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}

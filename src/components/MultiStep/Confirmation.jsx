@@ -137,7 +137,7 @@ const Confirmation = ({values}) => {
       });
 
           // Navigate to dashboard
-          navigate({ to: '/userDashboard' });
+          navigate({ to: '/userdashboard' });
         }
 
         else{

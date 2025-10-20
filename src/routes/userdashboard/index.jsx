@@ -57,11 +57,11 @@ const handleFilter = () => {
      <div className="">
       {/* Home Dashbaord inner Content */}
              <div className="pt-4 space-y-4">
-               <div className="rounded-[5px] border text-primary-main  px-5 py-3 flex flex-wrap lg:flex-row flex-col lg:items-center">
-                <UserProfileImage imageWidth={60} />
-                <div className="flex justify-center flex-col lg:px-5 font-rubik">
-                <h3 className="text-[30px] font-[500] flex items-center">Welcome back, 
-                  { isLoadingUserData ? <span className="loader"></span> : userData?.fullName} 😁
+               <div className="rounded-[5px] border text-primary-main px-5 py-3 flex flex-wrap lg:flex-row flex-col lg:items-center">
+                <UserProfileImage imageWidth={60} className={`lg:flex hidden`} />
+                <div className="flex justify-center flex-col lg:px-5 font-rubik gap-2">
+                <h3 className="lg:text-[30px] text-[20px] font-[500] flex items-center flex-wrap gap-2">Welcome  
+                  <span>{ isLoadingUserData ? <span className="loader"></span> : userData?.fullName} </span>
                  </h3>
                 <div className='flex lg:flex-row flex-col lg:gap-9'>
                 <p className='text-[#64748B] text-[14px] flex items-center'>Email:  
@@ -77,7 +77,7 @@ const handleFilter = () => {
      
              {/* Top Sector */}
                 <div className="flex  space-y-2 ">
-                <div className="p-1 basis-[100%] grid lg:grid-cols-3 gap-4  font-inter">
+                <div className="p-1 basis-[100%] grid lg:grid-cols-2 gap-4  font-inter">
                 {DashboardCards.map((_, index) => (
                            <Card key={index} className="border border-[#e8e8e8] rounded-[5px] overflow-hidden">
                              <CardContent className="flex justify-center space-y-2 flex-col px-[20px] py-[15px] bg-white ">
@@ -139,7 +139,7 @@ const handleFilter = () => {
                                </div>
                              
                              
-                             <div className="flex justify-end">
+                             <div className="lg:flex lg:justify-end grid text-center lg:mt-0 mt-3">
                               <Link to={`event/${_._id}`} disabled={_.paymentStatus == 'success' ? true : false} className={`${_.paymentStatus == 'success' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-primary-main hover:text-white'}  text-[14px] transition-all duration-150 border border-primary-main  px-[30px] py-[7px] `}>Register</Link>
                              </div>
                              </div>

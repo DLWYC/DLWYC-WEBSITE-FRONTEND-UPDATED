@@ -97,7 +97,7 @@ const RadioCard = ({ id, title, description, price, icon: Icon, isSelected, onSe
 const PaymentSelection = ({ selectedOption, setSelectedOption }) => {
 
   return (
-    <div className=" w-full bg-[#f4f7fa] py-2">
+    <div className=" w-full py-2">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Payment Type</h2>

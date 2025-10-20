@@ -105,7 +105,7 @@ const Form = ({ className, array, text, values, setValues, setPaymentCodeStatus,
           {selectedOption == 'multiple' ? (
             <div className="">
                <div className="lg:flex  items-center">
-        <label htmlFor="numberOfPayment" className="mr-2 font-500 text-[14px] text-[#060f3b]">Select Number: <span className="text-red-500">*</span></label>
+        <label htmlFor="numberOfPayment" className="mr-2 font-500 text-[14px] text-[#060f3b]">Input Number: <span className="text-red-500">*</span></label>
         <Input type="number" name="numberOfPayment" id="numberOfPayment" placeholder="0" className="border border-gray-600  lg:w-[50%] rounded-none mr-2" onChange={(e)=>setNumberOfPayment(Number(e.target.value))}/>
         </div>
             </div>

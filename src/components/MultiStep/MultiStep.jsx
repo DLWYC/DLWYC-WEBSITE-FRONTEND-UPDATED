@@ -40,7 +40,7 @@ const MultiStep = ({
     <div className="multistep-container relative">
       {/* **************** Step Indicator  **************** */}
       {showTitles && (
-        <div className="flex items-center justify-center mb-8 text-center  bg-[white] p-2 rounded-md" style={{ flexDirection: direction }}>
+        <div className="flex items-center justify-center mb-8 text-center bg-[white] lg:p-2 px-5 py-3 rounded-md" style={{ flexDirection: direction }}>
           {steps.map((step, index) => (
             <div key={index} className="flex items-center">
               <div className={`flex flex-col items-center ${direction === 'column' ? 'mb-4' : ''}`}>
@@ -51,7 +51,7 @@ const MultiStep = ({
                 }`}>
                   {index + 1}
                 </div>
-                <span className={`mt-2 text-xs font-medium transition-colors ${
+                <span className={`mt-2 text-xs lg:flex hidden font-medium transition-colors ${
                   index === currentStep ? 'text-primary-main' : 'text-gray-500'
                 }`}>
                   {step.title}
@@ -201,7 +201,7 @@ const MultiSteps = ({userData, eventDetails}) => {
 }, [selectedOption, paymentCodeStatus, userData, values, formStep]);
 
   return (
-       <div className="p-6 bg-[#f4f7fa] rounded-xl  w-full mx-auto">
+       <div className="p-6 rounded-xl  w-full mx-auto">
        {console.log("All Gathered: ", paymentCodeStatus)}
       <MultiStep
         steps={steps}
@@ -244,7 +244,7 @@ nextButton={{
 }}
         showNavigation={true}
         showTitles={true}
-        direction="row"
+        // direction="column"
       />
     </div>
   );
