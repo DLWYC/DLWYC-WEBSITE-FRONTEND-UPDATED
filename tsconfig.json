@@ -1,19 +1,18 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "prettier.config.js", "vite.config.js", "src/routes/index.jsx", "src/components/Nav_Bar/Nav_Bar.jsx"],
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js", "src/routes/index.jsx", "src/components/Nav_Bar/Nav_Bar.jsx"],
   
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "node"],
+    "types": ["vite/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-    "allowJs": true,
 
     /* Linting */
     "skipLibCheck": true,
